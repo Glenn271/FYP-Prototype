@@ -1,7 +1,8 @@
 {% extends "world/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-
-          <h2 >{{ user.username }}</h2>
-
+          <h1>Your Profile</h1>
+          <br>
+          <h4 >Username: {{ user.username }}</h4>
+          <h4> Email: {{ user.email }}</h4>
 {% endblock content %}

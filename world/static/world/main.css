@@ -18,6 +18,7 @@ ul {
 
 .site-header .navbar-nav .nav-link {
   color: #cbd5db;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .site-header .navbar-nav .nav-link:hover {
@@ -95,3 +96,4 @@ a.article-title:hover {
 .django-leaflet-raw-textarea {
   width: 100%;
 }
+
