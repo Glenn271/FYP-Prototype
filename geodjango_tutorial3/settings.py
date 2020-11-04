@@ -24,8 +24,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'htpcw9y+a1#&!3j)ufjya@q&n=u+)^$1gv_qilli2#o@^mcx&5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -99,10 +97,22 @@ if socket.gethostname() == "LAPTOP-0NQP8MR2":
     # It's running locally on your laptop
     DATABASES["default"]["HOST"] = "localhost"
     DATABASES["default"]["PORT"] = 25432
+    DEBUG = True
+    TEMPLATES[0]["OPTIONS"]["debug"] = True
+    # ALLOWED_HOSTS = ['.your-domain-name.xyz', 'localhost',]
+    ALLOWED_HOSTS = ['*', ]
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
 else:
     # it's running remotely (on Docker)
     DATABASES["default"]["HOST"] = "my-gis"
     DATABASES["default"]["PORT"] = 5432
+    DEBUG = False
+    TEMPLATES[0]["OPTIONS"]["debug"] = False
+    ALLOWED_HOSTS = ['*', ]
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
