@@ -21,7 +21,6 @@ STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -44,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'crispy_forms',
     'leaflet',
+    'pwa',
     'world.apps.WorldConfig',
     'users.apps.UsersConfig',
 ]
@@ -170,3 +170,33 @@ LEAFLET_CONFIG = {
 }
 LOGIN_REDIRECT_URL = 'profile'
 
+PWA_APP_NAME = 'FindMyPlace'
+PWA_APP_DESCRIPTION = "Advanced Web Mapping application"
+PWA_APP_THEME_COLOR = '#5f8a80'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/images/myhome.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': '/static/images/myhome.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        'src': '/static/images/icons/myhome.png',
+        'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
+    }
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'en-US'
+PWA_SERVICE_WORKER_PATH = 'serviceworker.js'
