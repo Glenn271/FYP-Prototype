@@ -21,3 +21,11 @@ class WorldBorder(models.Model):
     # Returns the string representation of the model.
     def __str__(self):
         return self.name
+
+class Property(models.Model):
+    address = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    lon = models.FloatField()
+    lat = models.FloatField()
+
+

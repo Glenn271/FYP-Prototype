@@ -200,3 +200,5 @@ PWA_APP_SPLASH_SCREEN = [
 PWA_APP_DIR = 'ltr'
 PWA_APP_LANG = 'en-US'
 PWA_SERVICE_WORKER_PATH = 'serviceworker.js'
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'

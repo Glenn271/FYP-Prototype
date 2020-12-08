@@ -3,6 +3,9 @@ from .forms import PropertySearchForm
 import requests
 from bs4 import BeautifulSoup
 import urllib.parse
+from django.views import generic
+import json
+from django.http import JsonResponse
 
 locations = [
     {
@@ -31,6 +34,8 @@ def about(request):
     return render(request, 'world/about.html', {'title': 'About'})
 
 def search(request):
+    prop_list = []
+    count = 1
     if request.method == 'POST':
         form = PropertySearchForm(request.POST)
 
@@ -45,16 +50,33 @@ def search(request):
             for prop in propertyCard:
                 propList = prop
                 propAddress = propList.find(class_="PropertyListingCard__Address").get_text()
-                print(propAddress)
+                #print(propAddress)
 
                 url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(propAddress) + '?format=json'
                 response = requests.get(url).json()
-                print("Latitude " + response[0]["lat"])
-                print("Longitude " + response[0]["lon"])
+
+                lat = response[0]["lat"]
+                lon = response[0]["lon"]
+
+                property = {
+                    'address' : propAddress,
+                    'city' : city,
+                    'lat' : lat,
+                    'lon' : lon
+                }
+
+                prop_list.append(property)
+                count += 1
+            json_res = json.dumps(prop_list)
+            print(json_res)
+
+            return render(request, 'world/results.html', {'json_res' : json_res})
+
     else:
         form = PropertySearchForm()
-
     return render(request, 'world/search.html', {'form' : form})
+
+
 
 
 
