@@ -1,6 +1,7 @@
 from django import forms
-
+from .models import Prop
 CITIES = [
+    ('balbriggan', 'Balbriggan'),
     ('clondalkin', 'Clondalkin'),
     ('finglas', 'Finglas'),
     ('tallaght', 'Tallaght'),

@@ -35,7 +35,6 @@ def about(request):
 
 def search(request):
     prop_list = []
-    count = 1
     if request.method == 'POST':
         form = PropertySearchForm(request.POST)
 
@@ -66,11 +65,11 @@ def search(request):
                 }
 
                 prop_list.append(property)
-                count += 1
-            json_res = json.dumps(prop_list)
-            print(json_res)
-
-            return render(request, 'world/results.html', {'json_res' : json_res})
+            # json_res = json.dumps(prop_list)
+            # print(json_res)
+            #
+            # return render(request, 'world/results.html', {'json_res' : json_res})
+            return JsonResponse({'prop_list':prop_list})
 
     else:
         form = PropertySearchForm()
