@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .forms import PropertySearchForm
 import requests
 from bs4 import BeautifulSoup
@@ -34,6 +34,7 @@ def about(request):
     return render(request, 'world/about.html', {'title': 'About'})
 
 def search(request):
+    context = {}
     prop_list = []
     if request.method == 'POST':
         form = PropertySearchForm(request.POST)
@@ -65,17 +66,20 @@ def search(request):
                 }
 
                 prop_list.append(property)
-            # json_res = json.dumps(prop_list)
-            # print(json_res)
-            #
-            # return render(request, 'world/results.html', {'json_res' : json_res})
-            return JsonResponse({'prop_list':prop_list})
+
+            example_coords = {
+                'lat' : 51.0,
+                'lon' : -0.09
+            }
+
+            context['prop_list'] = prop_list
+            context['form'] = form
+            context['example_coords'] = example_coords
+
+
+            #return render(request, 'world/search.html', context)
+            return render(request, 'world/results.html', context)
 
     else:
         form = PropertySearchForm()
     return render(request, 'world/search.html', {'form' : form})
-
-
-
-
-

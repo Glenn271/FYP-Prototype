@@ -1,10 +1,10 @@
 from django import forms
 from .models import Prop
 CITIES = [
-    ('balbriggan', 'Balbriggan'),
-    ('clondalkin', 'Clondalkin'),
-    ('finglas', 'Finglas'),
-    ('tallaght', 'Tallaght'),
+    ('Balbriggan', 'Balbriggan'),
+    ('Clondalkin', 'Clondalkin'),
+    ('Finglas', 'Finglas'),
+    ('Tallaght', 'Tallaght'),
 ]
 
 class PropertySearchForm(forms.Form):

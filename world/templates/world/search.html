@@ -7,7 +7,8 @@
 
 {% block content %}
     <body>
-    <form method="POST" onSubmit="getProps()">
+
+    <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Find Property</legend>
@@ -16,23 +17,16 @@
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Search</button>
             </div>
-        <div id = properties>
-        </div>
+
+            <div id = "properties">
+            <h2>Properties Available</h2>
+                {% for prop in prop_list %}
+                   <p>{{ prop.address }} </p>
+                {% endfor %}
+            </div>
     </form>
     </body>
 
-    <script>
-    function getProps(){
-       $.ajax({
-            url: '{% url 'world-search' %}',
-            type: 'GET',
-            data: {},
-           success:function(response){
-                alert("Test successful!");
-           }
-        });
-    }
-    </script>
 {% endblock content %}
 
 
