@@ -8,7 +8,7 @@
     <head>
         {% leaflet_js %}
         {% leaflet_css %}
-        {% block head_title %}{% trans "Results" %}{% endblock %}
+        {% block head_title %}{% trans "Available Properties" %}{% endblock %}
         {% block extra_header %}
             <style>
                 #map {width: 70vw;height: 70vh;}
@@ -21,7 +21,7 @@
             {% leaflet_map "map" callback="window.map_init_basic" %}
             <br>
             <div id = "info">
-                <h3> Results </h3>
+                <h3> Available Properties </h3>
                 {% for prop in prop_list %}
                     <div class="card" style="width: 70vw;">
                       <div class="card-body">
@@ -29,7 +29,7 @@
                         <p class="card-text">{{ prop.rent }}</p>
                       </div>
                     </div>
-{#                    <div class = "coords" lat = "{{ prop.lat }}" lon = "{{ prop.lon }}"/>#}
+                    <div class = "coords" lat = "{{ prop.lat }}" lon = "{{ prop.lon }}"/>
                     <br>
                 {% endfor %}
             </div>
@@ -89,17 +89,16 @@
 
         function setMapToCurrentLocation(map, pos) {
             console.log("In setMapToCurrentLocation.");
+            $('.coords').each(function() {
+                var lat = $(this).attr('lat');
+                var lon = $(this).attr('lon');
+                let myLatLon = L.latLng(lat, lon);
+                locationMarker = new L.Marker(myLatLon).addTo(map);
+            });
 
-            let myLatLon = L.latLng('{{example_coords.lat}}', '{{example_coords.lon}}');
+            let myLatLon = L.latLng('{{ prop_list.0.lat}}', '{{prop_list.0.lon}}');
+
             map.flyTo(myLatLon, 16);
-            if (locationMarker) {
-                map.removeLayer(locationMarker);
-            }
-            locationMarker = new L.Marker(myLatLon).addTo(map);
-            if (circle) {
-                map.removeLayer(circle);
-            }
-            circle = L.circle(myLatLon, {color: 'blue',fillColor: 'blue',fillOpacity: 0.3,radius: pos.coords.accuracy}).addTo(map);
 
             $(".toast-body").html("Found location<br>Lat: " + myLatLon.lat + " Lon: " + myLatLon.lng);
             $(".toast").toast('show');

@@ -71,19 +71,10 @@ def search(request):
 
                 prop_list.append(property)
 
-            if city == 'Clondalkin':
-                example_coords = {
-                    'lat' : 53.3259796,
-                    'lon' : -6.3815651
-                }
-
             #context
             context['prop_list'] = prop_list
             context['form'] = form
-            context['example_coords'] = example_coords
 
-
-            #return render(request, 'world/search.html', context)
             return render(request, 'world/results.html', context)
 
     else:
