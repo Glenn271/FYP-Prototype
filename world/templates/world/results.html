@@ -8,10 +8,10 @@
     <head>
         {% leaflet_js %}
         {% leaflet_css %}
-        {% block head_title %}{% trans "Your Map" %}{% endblock %}
+        {% block head_title %}{% trans "Perfect Property Found!" %}{% endblock %}
         {% block extra_header %}
             <style>
-                #map {width: 70vw;height: 80vh;}
+                #map {width: 70vw;height: 70vh;}
             </style>
         {% endblock %}
 
@@ -19,6 +19,11 @@
     <body>
         {% block body_content %}
             {% leaflet_map "map" callback="window.map_init_basic" %}
+            <br>
+            <div id = "info">
+                <h3> Property Info </h3>
+                <p> {{ example_coords.address }} </p>
+            </div>
         {% endblock %}
     </body>
     {% block extra_footer %}
