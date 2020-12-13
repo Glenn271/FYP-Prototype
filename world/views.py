@@ -50,6 +50,7 @@ def search(request):
             for prop in propertyCard:
                 propList = prop
                 propAddress = propList.find(class_="PropertyListingCard__Address").get_text()
+                rentPrice = propList.find(class_="PropertyListingCard__Price").get_text()
 
                 url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(propAddress) + '?format=json'
                 response = requests.get(url).json()
@@ -64,14 +65,14 @@ def search(request):
                     'address' : propAddress,
                     'city' : city,
                     'lat' : lat,
-                    'lon' : lon
+                    'lon' : lon,
+                    'rent' : rentPrice
                 }
 
                 prop_list.append(property)
 
             if city == 'Clondalkin':
                 example_coords = {
-                    'address' : 'Yellow Meadows Vale, Clondalkin, Dublin 22',
                     'lat' : 53.3259796,
                     'lon' : -6.3815651
                 }

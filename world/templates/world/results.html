@@ -8,7 +8,7 @@
     <head>
         {% leaflet_js %}
         {% leaflet_css %}
-        {% block head_title %}{% trans "Perfect Property Found!" %}{% endblock %}
+        {% block head_title %}{% trans "Results" %}{% endblock %}
         {% block extra_header %}
             <style>
                 #map {width: 70vw;height: 70vh;}
@@ -21,11 +21,21 @@
             {% leaflet_map "map" callback="window.map_init_basic" %}
             <br>
             <div id = "info">
-                <h3> Property Info </h3>
-                <p> {{ example_coords.address }} </p>
+                <h3> Results </h3>
+                {% for prop in prop_list %}
+                    <div class="card" style="width: 70vw;">
+                      <div class="card-body">
+                        <h5 class="card-title">{{ prop.address }}</h5>
+                        <p class="card-text">{{ prop.rent }}</p>
+                      </div>
+                    </div>
+{#                    <div class = "coords" lat = "{{ prop.lat }}" lon = "{{ prop.lon }}"/>#}
+                    <br>
+                {% endfor %}
             </div>
         {% endblock %}
     </body>
+
     {% block extra_footer %}
 
         <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
@@ -79,6 +89,7 @@
 
         function setMapToCurrentLocation(map, pos) {
             console.log("In setMapToCurrentLocation.");
+
             let myLatLon = L.latLng('{{example_coords.lat}}', '{{example_coords.lon}}');
             map.flyTo(myLatLon, 16);
             if (locationMarker) {
