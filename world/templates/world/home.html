@@ -85,7 +85,7 @@
             }
             circle = L.circle(myLatLon, {color: 'blue',fillColor: 'blue',fillOpacity: 0.3,radius: pos.coords.accuracy}).addTo(map);
 
-            $(".toast-body").html("Found location<br>Lat: " + myLatLon.lat + " Lon: " + myLatLon.lng);
+            $(".toast-body").html("Your location<br>Lat: " + myLatLon.lat + " Lon: " + myLatLon.lng);
             $(".toast").toast('show');
         }
 

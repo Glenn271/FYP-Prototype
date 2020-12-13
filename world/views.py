@@ -33,6 +33,7 @@ def home(request):
 def about(request):
     return render(request, 'world/about.html', {'title': 'About'})
 
+#property search form
 def search(request):
     context = {}
     prop_list = []
@@ -42,16 +43,18 @@ def search(request):
         if form.is_valid():
             city = form.cleaned_data['city']
 
-            #get city data from myHome
+            #get housing data from myHome
             page = requests.get("https://www.myhome.ie/rentals/dublin/house-to-rent-in-{0}".format(city))
             soup = BeautifulSoup(page.content, 'html.parser')
             propertyCard = soup.find_all(class_="PropertyListingCard")
 
+            #parsing content and assigning to variables
             for prop in propertyCard:
                 propList = prop
                 propAddress = propList.find(class_="PropertyListingCard__Address").get_text()
                 rentPrice = propList.find(class_="PropertyListingCard__Price").get_text()
 
+                #using Nominatim for lat/lon info of property
                 url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(propAddress) + '?format=json'
                 response = requests.get(url).json()
 
@@ -61,6 +64,7 @@ def search(request):
                 print(propAddress)
                 print(lat + " " + lon)
 
+                #making JSON object for property data
                 property = {
                     'address' : propAddress,
                     'city' : city,
@@ -69,12 +73,14 @@ def search(request):
                     'rent' : rentPrice
                 }
 
+                #add to list of properties
                 prop_list.append(property)
 
             #context
             context['prop_list'] = prop_list
             context['form'] = form
 
+            #search results if form is valid
             return render(request, 'world/results.html', context)
 
     else:

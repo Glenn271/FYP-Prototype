@@ -162,15 +162,17 @@ CRISPY_FAIL_SILENTLY = not DEBUG
 LEAFLET_CONFIG = {
     'DEFAULT_CENTER': (53.0, -8.0),
     'DEFAULT_ZOOM': 6,
+    'FORCE_IMAGE_PATH' : True,
     'MIN_ZOOM': 3,
     'MAX_ZOOM': 18,
     'RESET_VIEW': False,
     'SCALE': None,
     'OPACITY': 0.5,
 }
+
 LOGIN_REDIRECT_URL = 'profile'
 
-PWA_APP_NAME = 'FindMyPlace'
+PWA_APP_NAME = 'RentCommend'
 PWA_APP_DESCRIPTION = "Advanced Web Mapping application"
 PWA_APP_THEME_COLOR = '#5f8a80'
 PWA_APP_BACKGROUND_COLOR = '#ffffff'

@@ -8,7 +8,7 @@
     <head>
         {% leaflet_js %}
         {% leaflet_css %}
-        {% block head_title %}{% trans "Available Properties" %}{% endblock %}
+        {% block head_title %}{% trans "Results" %}{% endblock %}
         {% block extra_header %}
             <style>
                 #map {width: 70vw;height: 70vh;}
@@ -23,13 +23,16 @@
             <div id = "info">
                 <h3> Available Properties </h3>
                 {% for prop in prop_list %}
-                    <div class="card" style="width: 70vw;">
+                    <div class="card" style="width: 70vw;"
+                         address = "{{ prop.address }}"
+                         rent = "{{ prop.rent }}"
+                         lat = "{{ prop.lat }}"
+                         lon = "{{ prop.lon }}">
                       <div class="card-body">
                         <h5 class="card-title">{{ prop.address }}</h5>
                         <p class="card-text">{{ prop.rent }}</p>
                       </div>
                     </div>
-                    <div class = "coords" lat = "{{ prop.lat }}" lon = "{{ prop.lon }}"/>
                     <br>
                 {% endfor %}
             </div>
@@ -87,21 +90,23 @@
             );
         }
 
+        //setting the locations of properties on the map
         function setMapToCurrentLocation(map, pos) {
             console.log("In setMapToCurrentLocation.");
-            $('.coords').each(function() {
+            $('.card').each(function() {
+                var address = $(this).attr('address');
+                var rent = $(this).attr('rent');
                 var lat = $(this).attr('lat');
                 var lon = $(this).attr('lon');
+
                 let myLatLon = L.latLng(lat, lon);
                 locationMarker = new L.Marker(myLatLon).addTo(map);
+                locationMarker.bindPopup("<b>"+address+"</b><br>"+rent).openPopup();
             });
 
             let myLatLon = L.latLng('{{ prop_list.0.lat}}', '{{prop_list.0.lon}}');
 
             map.flyTo(myLatLon, 16);
-
-            $(".toast-body").html("Found location<br>Lat: " + myLatLon.lat + " Lon: " + myLatLon.lng);
-            $(".toast").toast('show');
         }
 
         function update_db(pos) {
@@ -119,15 +124,15 @@
             }).done(function (data, status, xhr) {
                 console.log(data["message"])
                 var originalMsg = $(".toast-body").html();
-                $(".toast-body").html(originalMsg + "<br/>Updated database<br/>" + data["message"]);
+                //$(".toast-body").html(originalMsg + "<br/>Updated database<br/>" + data["message"]);
 
             }).fail(function (xhr, status, error) {
                 console.log('hi' + error);
                 var originalMsg = $(".toast-body").html();
-                $(".toast-body").html(originalMsg + "<br/>" + error);
+                //$(".toast-body").html(originalMsg + "<br/>" + error);
             }).always(function () {
                 console.log("find_loc_ed finished");
-                $(".toast").toast('show');
+                //$(".toast").toast('show');
             });
         }
 
