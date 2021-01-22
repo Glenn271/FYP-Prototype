@@ -9,3 +9,4 @@ CITIES = [
 
 class PropertySearchForm(forms.Form):
     city = forms.CharField(label='City', widget= forms.Select(choices = CITIES))
+    rent = forms.CharField(label = 'Ideal Rent Price p/m', required = False)

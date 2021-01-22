@@ -8,6 +8,10 @@
 {% block content %}
     <body>
 
+    {% if noProp %}
+        <li> No properties found. Please try again.  </li>
+    {% endif %}
+
     <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">

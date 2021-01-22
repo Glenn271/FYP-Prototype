@@ -3,9 +3,9 @@ from .forms import PropertySearchForm
 import requests
 from bs4 import BeautifulSoup
 import urllib.parse
-from django.views import generic
-import json
-from django.http import JsonResponse
+import re
+import spacy
+
 
 locations = [
     {
@@ -37,44 +37,90 @@ def about(request):
 def search(request):
     context = {}
     prop_list = []
+
     if request.method == 'POST':
         form = PropertySearchForm(request.POST)
 
         if form.is_valid():
             city = form.cleaned_data['city']
+            maxRent = form.cleaned_data['rent']
 
             #get housing data from myHome
             page = requests.get("https://www.myhome.ie/rentals/dublin/house-to-rent-in-{0}".format(city))
             soup = BeautifulSoup(page.content, 'html.parser')
+            noProp = soup.find_all(class_="NoResultsCard py-5")
             propertyCard = soup.find_all(class_="PropertyListingCard")
 
-            #parsing content and assigning to variables
-            for prop in propertyCard:
-                propList = prop
-                propAddress = propList.find(class_="PropertyListingCard__Address").get_text()
-                rentPrice = propList.find(class_="PropertyListingCard__Price").get_text()
+            print(noProp)
 
-                #using Nominatim for lat/lon info of property
-                url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(propAddress) + '?format=json'
-                response = requests.get(url).json()
+            if noProp:
+                context['noProp'] = True
+                return render(request, 'world/search.html', context)
 
-                lat = response[0]["lat"]
-                lon = response[0]["lon"]
+            else:
+                #parsing content and assigning to variables
+                for prop in propertyCard:
+                    propList = prop
+                    propAddress = propList.find(class_="PropertyListingCard__Address").get_text()
+                    rentPrice = propList.find(class_="PropertyListingCard__Price").get_text()
 
-                print(propAddress)
-                print(lat + " " + lon)
+                    try:
+                        rentNumeric = re.search('€(.+?) ',rentPrice).group(1)
+                    except AttributeError:
+                        rentNumeric = ''
 
-                #making JSON object for property data
-                property = {
-                    'address' : propAddress,
-                    'city' : city,
-                    'lat' : lat,
-                    'lon' : lon,
-                    'rent' : rentPrice
-                }
+                    #using Nominatim for lat/lon info of property
+                    url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(propAddress) + '?format=json'
+                    response = requests.get(url).json()
 
-                #add to list of properties
-                prop_list.append(property)
+                    try:
+                        lat = response[0]["lat"]
+                        lon = response[0]["lon"]
+
+                    #change this to have defaults
+                    except:
+                        lat = '53.350140'
+                        lon = '-6.266155'
+
+                    print(propAddress)
+                    print(lat + " " + lon)
+
+                    if maxRent != '' and rentNumeric != '':
+                        rentNumeric = rentNumeric.replace(',','')
+                        nlp = spacy.load("en_core_web_sm")
+                        ideal_rent = nlp(maxRent)
+                        actual_rent = nlp(rentNumeric)
+
+                        print('???????????????')
+                        print(ideal_rent.similarity(actual_rent))
+                        print('???????????????')
+
+                        # making JSON object for property data
+                        property = {
+                            'address': propAddress,
+                            'city': city,
+                            'lat': lat,
+                            'lon': lon,
+                            'rent': rentPrice,
+                            'rent_sim': ideal_rent.similarity(actual_rent)
+                        }
+
+                        prop_list.append(property)
+                    else:
+                        property = {
+                            'address': propAddress,
+                            'city': city,
+                            'lat': lat,
+                            'lon': lon,
+                            'rent': rentPrice,
+                            'rent_sim': 0
+                        }
+                        prop_list.append(property)
+
+            #sort based on rent similarity
+            prop_list.sort(key = lambda k : k['rent_sim'], reverse=True)
+
+            print(prop_list[0])
 
             #context
             context['prop_list'] = prop_list
@@ -86,3 +132,4 @@ def search(request):
     else:
         form = PropertySearchForm()
     return render(request, 'world/search.html', {'form' : form})
+
