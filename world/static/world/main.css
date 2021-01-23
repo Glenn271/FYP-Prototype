@@ -99,3 +99,17 @@ a.article-title:hover {
   width: 100%;
 }
 
+.ul_card{
+list-style-type: none;
+padding: 0;
+margin: 0;
+text-align: right;
+}
+
+li
+{
+background-repeat: no-repeat;
+background-position: 100% .4em;
+padding-right: .6em;
+}
+
