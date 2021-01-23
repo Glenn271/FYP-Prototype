@@ -88,12 +88,13 @@ def search(request):
                     if maxRent != '' and rentNumeric != '':
                         rentNumeric = rentNumeric.replace(',','')
                         nlp = spacy.load("en_core_web_sm")
-                        ideal_rent = nlp(maxRent)
-                        actual_rent = nlp(rentNumeric)
 
-                        print('???????????????')
-                        print(ideal_rent.similarity(actual_rent))
-                        print('???????????????')
+                        ideal_rent = int(maxRent)
+                        actual_rent = int(rentNumeric)
+                        #
+                        # print('???????????????')
+                        # print(ideal_rent.similarity(actual_rent))
+                        # print('???????????????')
 
                         # making JSON object for property data
                         property = {
@@ -102,7 +103,8 @@ def search(request):
                             'lat': lat,
                             'lon': lon,
                             'rent': rentPrice,
-                            'rent_sim': ideal_rent.similarity(actual_rent)
+                            # 'rent_sim': ideal_rent.similarity(actual_rent)
+                            'rent_sim' : abs(ideal_rent - actual_rent)
                         }
 
                         prop_list.append(property)
