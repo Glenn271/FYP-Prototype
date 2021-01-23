@@ -91,10 +91,17 @@ def search(request):
 
                         ideal_rent = int(maxRent)
                         actual_rent = int(rentNumeric)
-                        #
-                        # print('???????????????')
-                        # print(ideal_rent.similarity(actual_rent))
-                        # print('???????????????')
+
+                        diff = actual_rent - ideal_rent
+
+                        if(diff <= 0 or diff <= (ideal_rent * 0.33)):
+                            rent_sim = "High"
+                        elif(diff > (ideal_rent * 0.33) and diff <= (ideal_rent * 0.67)):
+                            rent_sim = "Medium"
+                        elif(diff > (ideal_rent * 0.67)):
+                            rent_sim = "Low"
+                        else:
+                            rent_sim = "Unknown"
 
                         # making JSON object for property data
                         property = {
@@ -103,8 +110,7 @@ def search(request):
                             'lat': lat,
                             'lon': lon,
                             'rent': rentPrice,
-                            # 'rent_sim': ideal_rent.similarity(actual_rent)
-                            'rent_sim' : abs(ideal_rent - actual_rent)
+                            'rent_sim' : rent_sim
                         }
 
                         prop_list.append(property)
@@ -115,7 +121,7 @@ def search(request):
                             'lat': lat,
                             'lon': lon,
                             'rent': rentPrice,
-                            'rent_sim': 0
+                            'rent_sim': "Unknown"
                         }
                         prop_list.append(property)
 
