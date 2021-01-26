@@ -46,7 +46,7 @@ def search(request):
             maxRent = form.cleaned_data['rent']
 
             #get housing data from myHome
-            page = requests.get("https://www.myhome.ie/rentals/dublin/house-to-rent-in-{0}".format(city))
+            page = requests.get("https://www.myhome.ie/rentals/dublin/property-to-rent-in-{0}".format(city))
             soup = BeautifulSoup(page.content, 'html.parser')
             noProp = soup.find_all(class_="NoResultsCard py-5")
             propertyCard = soup.find_all(class_="PropertyListingCard")
@@ -63,6 +63,27 @@ def search(request):
                     propList = prop
                     propAddress = propList.find(class_="PropertyListingCard__Address").get_text()
                     rentPrice = propList.find(class_="PropertyListingCard__Price").get_text()
+
+                    #property info
+                    infoSpans = propList.find_all('span', {'class' : 'PropertyInfoStrip__Detail ng-star-inserted'})
+                    infoLines = [span.get_text() for span in infoSpans]
+
+                    print(infoLines)
+
+                    beds = baths = house = 'N/A'
+                    houseTypes = ['Apartment ', 'Terraced House ', 'Semi-Detached ',
+                                  'Detached ', 'Bungalow ', 'Country House ', 'Studio ']
+
+                    #assign values for prop info
+                    for line in infoLines:
+                        if ('bed' in line):
+                            beds = line
+                        if('bath' in line):
+                            baths = line
+                        if(line in houseTypes):
+                            house = line
+
+                    print(beds, baths, house)
 
                     try:
                         rentNumeric = re.search('€(.+?) ',rentPrice).group(1)
@@ -102,33 +123,27 @@ def search(request):
                             rent_sim = "Low"
                         else:
                             rent_sim = "Unknown"
+                    else:
+                        rent_sim = "Unknown"
 
                         # making JSON object for property data
-                        property = {
-                            'address': propAddress,
-                            'city': city,
-                            'lat': lat,
-                            'lon': lon,
-                            'rent': rentPrice,
-                            'rent_sim' : rent_sim
-                        }
+                    property = {
+                        'address': propAddress,
+                        'city': city,
+                        'lat': lat,
+                        'lon': lon,
+                        'rent': rentPrice,
+                        'rent_sim' : rent_sim,
+                        'beds': beds,
+                        'baths': baths,
+                        'house': house
+                    }
 
-                        prop_list.append(property)
-                    else:
-                        property = {
-                            'address': propAddress,
-                            'city': city,
-                            'lat': lat,
-                            'lon': lon,
-                            'rent': rentPrice,
-                            'rent_sim': "Unknown"
-                        }
-                        prop_list.append(property)
+                    prop_list.append(property)
+
 
             #sort based on rent similarity
             prop_list.sort(key = lambda k : k['rent_sim'], reverse=True)
-
-            print(prop_list[0])
 
             #context
             context['prop_list'] = prop_list

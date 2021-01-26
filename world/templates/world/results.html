@@ -28,7 +28,11 @@
                          rent = "{{ prop.rent }}"
                          lat = "{{ prop.lat }}"
                          lon = "{{ prop.lon }}"
-                         rent_sim = "{{ prop.rent_sim }}">
+                         rent_sim = "{{ prop.rent_sim }}"
+                         beds = "{{ prop.beds }}"
+                         baths = "{{ prop.baths }}"
+                         house = "{{ prop.house }}">
+
                       <div class="card-body">
                         <h5 class="card-title">{{ prop.address }}</h5>
                         <p class="card-text">{{ prop.rent }}</p>
@@ -47,6 +51,9 @@
                                         {% endif %}
                                     }
                                 </style>
+                          <li> Beds: {{ prop.beds }}</li>
+                          <li> Baths: {{ prop.baths }}</li>
+                          <li> Property Type: {{ prop.house }}</li>
                           </ul>
                       </div>
                     </div>
