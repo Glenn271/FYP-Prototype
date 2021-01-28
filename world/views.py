@@ -44,6 +44,8 @@ def search(request):
         if form.is_valid():
             city = form.cleaned_data['city']
             maxRent = form.cleaned_data['rent']
+            houseType = form.cleaned_data['house_type']
+            nlp = spacy.load("en_core_web_sm")
 
             #get housing data from myHome
             page = requests.get("https://www.myhome.ie/rentals/dublin/property-to-rent-in-{0}".format(city))
@@ -85,6 +87,7 @@ def search(request):
 
                     print(beds, baths, house)
 
+                    #extract number from rent price p/m
                     try:
                         rentNumeric = re.search('€(.+?) ',rentPrice).group(1)
                     except AttributeError:
@@ -98,17 +101,19 @@ def search(request):
                         lat = response[0]["lat"]
                         lon = response[0]["lon"]
 
-                    #change this to have defaults
+                    #find default coords of city if difficulties finding address
                     except:
-                        lat = '53.350140'
-                        lon = '-6.266155'
+                        url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(
+                            city) + '?format=json'
+                        response = requests.get(url).json()
+                        lat = response[0]["lat"]
+                        lon = response[0]["lon"]
 
                     print(propAddress)
                     print(lat + " " + lon)
 
                     if maxRent != '' and rentNumeric != '':
                         rentNumeric = rentNumeric.replace(',','')
-                        nlp = spacy.load("en_core_web_sm")
 
                         ideal_rent = int(maxRent)
                         actual_rent = int(rentNumeric)
@@ -126,7 +131,17 @@ def search(request):
                     else:
                         rent_sim = "Unknown"
 
-                        # making JSON object for property data
+                    house_sim = 0
+                    #ideal vs actual house type
+                    if houseType != '':
+                        ideal_house = nlp(houseType)
+                        actual_house = nlp(house)
+
+                        house_sim = int(ideal_house.similarity(actual_house))
+                        print(house_sim)
+
+
+                    # making JSON object for property data
                     property = {
                         'address': propAddress,
                         'city': city,
@@ -136,7 +151,8 @@ def search(request):
                         'rent_sim' : rent_sim,
                         'beds': beds,
                         'baths': baths,
-                        'house': house
+                        'house': house,
+                        'house_sim': house_sim
                     }
 
                     prop_list.append(property)

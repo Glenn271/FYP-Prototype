@@ -31,7 +31,8 @@
                          rent_sim = "{{ prop.rent_sim }}"
                          beds = "{{ prop.beds }}"
                          baths = "{{ prop.baths }}"
-                         house = "{{ prop.house }}">
+                         house = "{{ prop.house }}"
+                         house_sim = "{{ prop.house_sim }}">
 
                       <div class="card-body">
                         <h5 class="card-title">{{ prop.address }}</h5>
@@ -53,7 +54,20 @@
                                 </style>
                           <li> Beds: {{ prop.beds }}</li>
                           <li> Baths: {{ prop.baths }}</li>
-                          <li> Property Type: {{ prop.house }}</li>
+                          <li class = "house_rec"> Property Type: {{ prop.house }}</li>
+                          <style>
+                                    .house_rec{
+                                        {% if prop.house_sim == 1 %}
+                                            color:green;
+                                        {% elif prop.house_sim >= 0.5 and prop.house_sim < 1 %}
+                                            color:orange;
+                                        {% elif prop.house_sim <= 0.5 %}
+                                            color:red;
+                                        {% else %}
+                                            color:grey;
+                                        {% endif %}
+                                    }
+                          </style>
                           </ul>
                       </div>
                     </div>
