@@ -21,4 +21,5 @@ HOUSE_TYPE = [
 class PropertySearchForm(forms.Form):
     city = forms.CharField(label='City', widget= forms.Select(choices = CITIES))
     rent = forms.CharField(label = 'Ideal Rent Price p/m', required = False)
-    house_type = forms.CharField(label='House Type', required = False, widget=forms.Select(choices=HOUSE_TYPE))
+    house_type = forms.MultipleChoiceField(label='House Type', required = False,
+                                           widget=forms.CheckboxSelectMultiple, choices = HOUSE_TYPE)

@@ -85,6 +85,18 @@ def search(request):
                         if(line in houseTypes):
                             house = line
 
+                    house_sim = 0
+                    # ideal vs actual house type
+                    if houseType:
+                        # ideal_house = nlp(houseType)
+                        # actual_house = nlp(house)
+                        #
+                        # house_sim = int(ideal_house.similarity(actual_house))
+                        for ideal_house in houseType:
+                            if ideal_house in house:
+                                house_sim = 1
+                        print(house_sim)
+
                     print(beds, baths, house)
 
                     #extract number from rent price p/m
@@ -130,16 +142,6 @@ def search(request):
                             rent_sim = "Unknown"
                     else:
                         rent_sim = "Unknown"
-
-                    house_sim = 0
-                    #ideal vs actual house type
-                    if houseType != '':
-                        ideal_house = nlp(houseType)
-                        actual_house = nlp(house)
-
-                        house_sim = int(ideal_house.similarity(actual_house))
-                        print(house_sim)
-
 
                     # making JSON object for property data
                     property = {
