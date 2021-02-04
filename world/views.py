@@ -43,7 +43,8 @@ def search(request):
 
         if form.is_valid():
             city = form.cleaned_data['city']
-            maxRent = form.cleaned_data['rent']
+            #maxRent = form.cleaned_data['rent']
+            maxRent = request.POST['rent']
             houseType = form.cleaned_data['house_type']
             nlp = spacy.load("en_core_web_sm")
 

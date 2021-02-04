@@ -22,10 +22,6 @@ class WorldBorder(models.Model):
     def __str__(self):
         return self.name
 
-class Prop(models.Model):
-    address = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
-    lon = models.FloatField()
-    lat = models.FloatField()
+
 
 

@@ -17,6 +17,18 @@
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Find Property</legend>
                 {{ form|crispy }}
+                <br>
+                <label>Ideal Rent per month</label>
+                <br>
+                <input id="rent" name="rent" type="range" min="0" max="10000"
+                       step="50" onchange="updateRentPrice(this.value)" />
+                <label id="rentPrice">€5000</label>
+                <script>
+                    function updateRentPrice(val) {
+                        var euro = "€"
+                        document.getElementById('rentPrice').innerHTML=euro.concat(val);
+                    }
+                </script>
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Search</button>
