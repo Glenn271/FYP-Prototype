@@ -1,4 +1,5 @@
 from django.contrib.gis.db import models
+from django.utils import timezone
 
 class WorldBorder(models.Model):
     # Regular Django fields corresponding to the attributes in the
@@ -22,6 +23,18 @@ class WorldBorder(models.Model):
     def __str__(self):
         return self.name
 
+#storing property information
+class TestProperty(models.Model):
+    address = models.CharField(max_length=100) #address of property
+    city = models.CharField(max_length=100) #city
+    lon = models.FloatField()
+    lat = models.FloatField()
+    date_posted = models.DateTimeField(default=timezone.now) #date the listing was added to db
+    rent = models.IntegerField() #rent price
+    propertyType = models.CharField(max_length=100) #type of house (apartment, bungalow etc)
+
+    def __str__(self):
+        return self.address
 
 
 
