@@ -30,7 +30,7 @@ class TestProperty(models.Model):
     lon = models.FloatField()
     lat = models.FloatField()
     date_posted = models.DateTimeField(default=timezone.now) #date the listing was added to db
-    rent = models.IntegerField() #rent price
+    rent = models.CharField(max_length=100) #rent price
     propertyType = models.CharField(max_length=100) #type of house (apartment, bungalow etc)
 
     def __str__(self):

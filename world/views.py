@@ -154,6 +154,70 @@ def about(request):
 #         form = PropertySearchForm()
 #     return render(request, 'world/search.html', {'form' : form})
 
+def find_latest_info(city):
+    search_props = []
+
+    page = requests.get("https://www.myhome.ie/rentals/dublin/property-to-rent-in-{0}".format(city))
+    soup = BeautifulSoup(page.content, 'html.parser')
+    propertyCard = soup.find_all(class_="PropertyListingCard")
+
+    for prop in propertyCard:
+        propList = prop
+        propAddress = propList.find(class_="PropertyListingCard__Address").get_text()
+        rentPrice = propList.find(class_="PropertyListingCard__Price").get_text()
+
+        #property info
+        infoSpans = propList.find_all('span', {'class' : 'PropertyInfoStrip__Detail ng-star-inserted'})
+        infoLines = [span.get_text() for span in infoSpans]
+
+        print(infoLines)
+
+        beds = baths = house = 'N/A'
+        houseTypes = ['Apartment ', 'Terraced House ', 'Semi-Detached ',
+                      'Detached ', 'Bungalow ', 'Country House ', 'Studio ']
+
+        #assign values for prop info
+        for line in infoLines:
+            if ('bed' in line):
+                beds = line
+            if('bath' in line):
+                baths = line
+            if(line in houseTypes):
+                house = line
+
+        # #extract number from rent price p/m
+        # try:
+        #     rentNumeric = int(re.search('€(.+?) ',rentPrice).group(1))
+        # except AttributeError:
+        #     rentNumeric = 0
+
+        #using Nominatim for lat/lon info of property
+        url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(propAddress) + '?format=json'
+        response = requests.get(url).json()
+
+        try:
+            lat = response[0]["lat"]
+            lon = response[0]["lon"]
+
+        #find default coords of city if difficulties finding address
+        except:
+            url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(
+                city) + '?format=json'
+            response = requests.get(url).json()
+            lat = response[0]["lat"]
+            lon = response[0]["lon"]
+
+        print(propAddress)
+        print(lat + " " + lon)
+
+        listing = TestProperty(address=propAddress, city = city, lat=lat,
+                               lon = lon, rent=rentPrice, propertyType = house)
+
+        listing.save()
+        search_props.append(listing)
+
+    return search_props
+
 def search(request):
     context = {}
     prop_list = []
@@ -167,7 +231,10 @@ def search(request):
             houseType = form.cleaned_data['house_type']
             nlp = spacy.load("en_core_web_sm")
 
-            search_props = TestProperty.objects.all()
+            search_props = TestProperty.objects.filter(city=city)
+
+            if not search_props:
+                search_props = find_latest_info(city)
 
             for prop in search_props:
                 # making JSON object for property data
