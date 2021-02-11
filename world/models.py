@@ -1,5 +1,6 @@
 from django.contrib.gis.db import models
 from django.utils import timezone
+from django.urls import reverse
 
 class WorldBorder(models.Model):
     # Regular Django fields corresponding to the attributes in the
@@ -35,6 +36,9 @@ class TestProperty(models.Model):
 
     def __str__(self):
         return self.address
+
+    def get_absolute_url(self):
+        return reverse('prop-detail', kwargs={'pk':self.pk})
 
 
 

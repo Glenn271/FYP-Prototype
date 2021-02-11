@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.views.generic import ListView,DetailView
 from .forms import PropertySearchForm
 from .models import TestProperty
 import requests
@@ -14,6 +15,17 @@ def home(request):
 
 def about(request):
     return render(request, 'world/about.html', {'title': 'About'})
+
+
+class PropListView(ListView):
+    model = TestProperty
+    template_name = 'world/results.html'
+    context_object_name = 'prop_list'
+
+
+class PropDetailView(DetailView):
+    model = TestProperty
+    context_object_name = 'prop'
 
 
 # #property search form
@@ -217,6 +229,7 @@ def find_latest_info(city):
         search_props.append(listing)
 
     return search_props
+
 
 def search(request):
     context = {}

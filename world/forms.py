@@ -2,6 +2,7 @@ from django import forms
 
 CITIES = [
     ('Balbriggan', 'Balbriggan'),
+    ('Ballsbridge', 'Ballsbridge'),
     ('Clondalkin', 'Clondalkin'),
     ('Finglas', 'Finglas'),
     ('Tallaght', 'Tallaght'),

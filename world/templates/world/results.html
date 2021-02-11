@@ -38,7 +38,8 @@
                       <div class="card-body">
                         <h5 class="card-title">{{ prop.address }}</h5>
                         <p class="card-text">{{ prop.rent }}</p>
-                        <p class="card-text">Posted {{ prop.date_posted }}</p>
+                        <p class="card-text">Posted {{ prop.date_posted|date:"F d, Y" }}</p>
+{#                        <a href="{{ prop.get_absolute_url }}" class="btn btn-primary">Read More &rarr;</a>#}
                           <ul class = "ul_card">
                                 <li class = "rent_rec">Rent</li>
                                 <style>
