@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.generic import ListView,DetailView
+from django.views.generic import DetailView
 from .forms import PropertySearchForm
 from .models import TestProperty
 import requests
@@ -15,12 +15,6 @@ def home(request):
 
 def about(request):
     return render(request, 'world/about.html', {'title': 'About'})
-
-
-class PropListView(ListView):
-    model = TestProperty
-    template_name = 'world/results.html'
-    context_object_name = 'prop_list'
 
 
 class PropDetailView(DetailView):
@@ -252,6 +246,7 @@ def search(request):
             for prop in search_props:
                 # making JSON object for property data
                 property = {
+                    'id' : prop.id,
                     'address': prop.address,
                     'city': prop.city,
                     'date_posted':prop.date_posted,
