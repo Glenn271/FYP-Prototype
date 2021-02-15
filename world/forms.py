@@ -24,3 +24,5 @@ class PropertySearchForm(forms.Form):
     #rent = forms.CharField(label = 'Ideal Rent Price p/m', required = False)
     house_type = forms.MultipleChoiceField(label='House Type', required = False,
                                            widget=forms.CheckboxSelectMultiple, choices = HOUSE_TYPE)
+class AmenitySearchForm(forms.Form):
+    submit = forms.CharField(label='Submit?')

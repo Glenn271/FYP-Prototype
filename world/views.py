@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
 from django.views.generic import DetailView
-from .forms import PropertySearchForm
+from .forms import AmenitySearchForm,PropertySearchForm
 from .models import TestProperty
 import requests
 from bs4 import BeautifulSoup
 import urllib.parse
 import re
-import spacy
+import overpy
 
 
 def home(request):
@@ -236,7 +236,6 @@ def search(request):
             city = form.cleaned_data['city']
             maxRent = request.POST['rent']
             houseType = form.cleaned_data['house_type']
-            nlp = spacy.load("en_core_web_sm")
 
             search_props = TestProperty.objects.filter(city=city)
 
@@ -271,3 +270,21 @@ def search(request):
     else:
         form = PropertySearchForm()
     return render(request, 'world/search.html', {'form' : form})
+
+
+def overpass_test(request):
+    api = overpy.Overpass()
+    result = api.query("""
+    way(50.746,7.154,50.748,7.157) ["highway"];
+    (._;>;);
+    out body;
+    """)
+
+    for way in result.ways:
+        print("Name: %s" % way.tags.get("name", "n/a"))
+        print("  Highway: %s" % way.tags.get("highway", "n/a"))
+        print("  Nodes:")
+        for node in way.nodes:
+            print("    Lat: %f, Lon: %f" % (node.lat, node.lon))
+
+    return render(request, 'world/home.html')

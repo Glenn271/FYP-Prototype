@@ -7,6 +7,7 @@
         <h1>{% block title %} {{ prop.address }} {% endblock title %}</h1>
         <p class="card-text ">Posted on : {{ prop.rent }}</p>
         <p class="card-text ">Rent: {{ prop.rent }}</p>
+        <a href="{% url 'overpass' %}">Amenities</a>
       </div>
     </div>
   </div>
