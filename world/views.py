@@ -272,19 +272,25 @@ def search(request):
     return render(request, 'world/search.html', {'form' : form})
 
 
+
 def overpass_test(request):
     api = overpy.Overpass()
-    result = api.query("""
-    way(50.746,7.154,50.748,7.157) ["highway"];
-    (._;>;);
-    out body;
-    """)
 
+    # fetch all areas
+    # More info on http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example
+    result = api.query("""
+            (
+              node["amenity"](around:1000,53.3244, -6.3972);
+              way["amenity"](around:1000,53.3244, -6.3972);
+              relation["amenity"](around:1000,53.3244, -6.3972);
+            );
+            out body;
+            >;
+        """)
+
+    for node in result.nodes:
+        print(node)
     for way in result.ways:
-        print("Name: %s" % way.tags.get("name", "n/a"))
-        print("  Highway: %s" % way.tags.get("highway", "n/a"))
-        print("  Nodes:")
-        for node in way.nodes:
-            print("    Lat: %f, Lon: %f" % (node.lat, node.lon))
+        print(way)
 
     return render(request, 'world/home.html')
