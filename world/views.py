@@ -278,19 +278,19 @@ def overpass_test(request):
 
     # fetch all areas
     # More info on http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example
-    result = api.query("""
+
+    lat = 53.3244
+    lon = -6.3972
+    query = ("""
             (
-              node["amenity"](around:1000,53.3244, -6.3972);
-              way["amenity"](around:1000,53.3244, -6.3972);
-              relation["amenity"](around:1000,53.3244, -6.3972);
+              node["amenity"](around:1000,{}, {});
             );
             out body;
             >;
-        """)
+        """).format(lat, lon)
+    result = api.query(query)
 
     for node in result.nodes:
-        print(node)
-    for way in result.ways:
-        print(way)
+        print(node.tags, node.lat, node.lon)
 
     return render(request, 'world/home.html')
