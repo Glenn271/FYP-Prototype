@@ -16,19 +16,36 @@
             {% csrf_token %}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Find Property</legend>
+                {#  comes from forms.py #}
                 {{ form|crispy }}
                 <br>
+                {#  rent price slider  #}
                 <label>Ideal Rent per month</label>
                 <br>
                 <input id="rent" name="rent" type="range" min="0" max="10000"
-                       step="50" onchange="updateRentPrice(this.value)" />
-                <label id="rentPrice">€5000</label>
+                       value = "5000" step="50"/>
+                <label id="rentPrice"></label>
                 <script>
-                    function updateRentPrice(val) {
-                        var euro = "€"
-                        document.getElementById('rentPrice').innerHTML=euro.concat(val);
+                    var euro = "€";
+                    var rent_slider = document.getElementById("rent");
+                    var rent_label = document.getElementById("rentPrice");
+                    rent_label.innerHTML = euro.concat(rent_slider.value);
+
+                    rent_slider.oninput = function(){
+                        rent_label.innerHTML = euro.concat(this.value);
                     }
                 </script>
+                {#  priority sliders  #}
+
+                <br>
+                {#  rent priority slider  #}
+                <label>Rent Cost Importance</label>
+                <br>
+                <label>Low</label>
+                <input id="rent_priority" name="rent_priority" type="range" min="0" max="1"
+                       value = "0.33" step="0.1"/>
+                <label>High</label>
+
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Search</button>

@@ -5,9 +5,9 @@
     <div class="col-md-8 card mb-4  mt-3 left  top">
       <div class="card-body">
         <h1>{% block title %} {{ prop.address }} {% endblock title %}</h1>
-        <p class="card-text ">Posted on : {{ prop.rent }}</p>
+        <p class="card-text ">Posted on : {{ prop.date_posted }}</p>
         <p class="card-text ">Rent: {{ prop.rent }}</p>
-        <a href="{% url 'overpass' %}">Amenities</a>
+        <a href="{% url 'overpass'  %}">Amenities</a>
       </div>
     </div>
   </div>

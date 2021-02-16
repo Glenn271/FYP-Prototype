@@ -40,16 +40,16 @@
                         <h5 class="card-title">{{ prop.address }}</h5>
                         <p class="card-text">{{ prop.rent }}</p>
                         <p class="card-text">Posted {{ prop.date_posted|date:"F d, Y" }}</p>
-                        <a href="{% url 'prop-detail' prop.id %}" class="btn btn-primary">Property Details &rarr;</a>
+                        <a href="{% url 'prop-detail' prop.id  %}" class="btn btn-primary">Property Details &rarr;</a>
                           <ul class = "ul_card">
                                 <li class = "rent_rec">Rent</li>
                                 <style>
                                     .rent_rec{
-                                        {% if prop.rent_sim == "High" %}
+                                        {% if prop.rent_sim >= 0.7  %}
                                             color:green;
-                                        {% elif prop.rent_sim == "Medium" %}
+                                        {% elif prop.rent_sim < 0.7 and prop.rent_sim >= 0.4 %}
                                             color:orange;
-                                        {% elif prop.rent_sim == "Low" %}
+                                        {% elif prop.rent_sim < 0.4 %}
                                             color:red;
                                         {% else %}
                                             color:grey;

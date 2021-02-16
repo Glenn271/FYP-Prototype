@@ -191,11 +191,6 @@ def find_latest_info(city):
             if(line in houseTypes):
                 house = line
 
-        # #extract number from rent price p/m
-        # try:
-        #     rentNumeric = int(re.search('€(.+?) ',rentPrice).group(1))
-        # except AttributeError:
-        #     rentNumeric = 0
 
         #using Nominatim for lat/lon info of property
         url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(propAddress) + '?format=json'
@@ -235,6 +230,7 @@ def search(request):
         if form.is_valid():
             city = form.cleaned_data['city']
             maxRent = request.POST['rent']
+            rentPriority = request.POST['rent_priority']
             houseType = form.cleaned_data['house_type']
 
             search_props = TestProperty.objects.filter(city=city)
@@ -243,6 +239,27 @@ def search(request):
                 search_props = find_latest_info(city)
 
             for prop in search_props:
+                #extract number from rent price p/m
+                try:
+                    rentNumeric = re.search('€(.+?) ',prop.rent).group(1)
+                    rentNumeric = re.replace(',', '')
+                except AttributeError:
+                    rentNumeric = 0
+
+                ideal_rent = int(maxRent)
+                actual_rent = int(rentNumeric)
+                rent_sim = 0
+
+                if actual_rent != 0:
+                    diff = actual_rent - ideal_rent
+
+                    if (diff <= 0 or diff <= (ideal_rent * 0.33)):
+                        rent_sim = 1
+                    elif(diff > (ideal_rent * 0.33) and diff <= (ideal_rent * 0.67)):
+                        rent_sim = 0.5
+                    else:
+                        rent_sim = 0
+
                 # making JSON object for property data
                 property = {
                     'id' : prop.id,
@@ -252,13 +269,17 @@ def search(request):
                     'lat': prop.lat,
                     'lon': prop.lon,
                     'rent': prop.rent,
-                    'rent_sim' : 0,
+                    'rent_sim' : rent_sim * rentPriority,
                     'beds': 0,
                     'baths': 0,
                     'house': prop.propertyType,
                     'house_sim': 0
                 }
                 prop_list.append(property)
+
+            # sort based on rent similarity
+
+            prop_list.sort(key=lambda k: k['rent_sim'], reverse=True)
 
             #context
             context['prop_list'] = prop_list
@@ -271,26 +292,25 @@ def search(request):
         form = PropertySearchForm()
     return render(request, 'world/search.html', {'form' : form})
 
-
-
 def overpass_test(request):
-    api = overpy.Overpass()
+    result = get_amenities()
+    return render(request, 'world/home.html')
 
-    # fetch all areas
-    # More info on http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example
+def get_amenities():
+    api = overpy.Overpass()
 
     lat = 53.3244
     lon = -6.3972
     query = ("""
-            (
-              node["amenity"](around:1000,{}, {});
-            );
-            out body;
-            >;
-        """).format(lat, lon)
+                (
+                  node["amenity"](around:1000,{}, {});
+                );
+                out body;
+                >;
+            """).format(lat, lon)
     result = api.query(query)
 
     for node in result.nodes:
         print(node.tags, node.lat, node.lon)
 
-    return render(request, 'world/home.html')
+    return result
