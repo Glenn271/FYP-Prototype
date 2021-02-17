@@ -242,23 +242,29 @@ def search(request):
                 #extract number from rent price p/m
                 try:
                     rentNumeric = re.search('€(.+?) ',prop.rent).group(1)
-                    rentNumeric = re.replace(',', '')
+                    rentNumeric = rentNumeric.replace(',', '')
                 except AttributeError:
                     rentNumeric = 0
 
                 ideal_rent = int(maxRent)
                 actual_rent = int(rentNumeric)
+
+                print ("Ideal vs Actual " + str(ideal_rent) + " " + str(actual_rent))
                 rent_sim = 0
 
                 if actual_rent != 0:
                     diff = actual_rent - ideal_rent
 
-                    if (diff <= 0 or diff <= (ideal_rent * 0.33)):
+                    if (diff <= 0):
                         rent_sim = 1
+                    elif (diff > 0 and diff <= (ideal_rent * 0.33)):
+                        rent_sim = 0.8
                     elif(diff > (ideal_rent * 0.33) and diff <= (ideal_rent * 0.67)):
                         rent_sim = 0.5
                     else:
                         rent_sim = 0
+
+                rent_sim = float(rent_sim * float(rentPriority))
 
                 # making JSON object for property data
                 property = {
@@ -269,7 +275,7 @@ def search(request):
                     'lat': prop.lat,
                     'lon': prop.lon,
                     'rent': prop.rent,
-                    'rent_sim' : rent_sim * rentPriority,
+                    'rent_sim' : rent_sim,
                     'beds': 0,
                     'baths': 0,
                     'house': prop.propertyType,
