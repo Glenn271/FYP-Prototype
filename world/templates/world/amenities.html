@@ -1,0 +1,157 @@
+{% extends "world/base.html" %}
+{% block content %}
+    {% load leaflet_tags %}
+    {% load static %}
+    {% load i18n %}
+    {% load crispy_forms_tags %}
+    {% load crispy_forms_filters %}
+    <head>
+        {% leaflet_js %}
+        {% leaflet_css %}
+        {% block head_title %}{% trans "Amenities" %}{% endblock %}
+        {% block extra_header %}
+            <style>
+                #map {width: 70vw;height: 70vh;}
+            </style>
+        {% endblock %}
+
+    </head>
+    <body>
+        {% block body_content %}
+            {% leaflet_map "map" callback="window.map_init_basic" %}
+            <br>
+            <br>
+            <div id = "info">
+                {% for amenity in amenity_list %}
+                    <div class="card" style="width: 70vw; display:none;"
+                         amenity = "{{ amenity.amenity }}"
+                         name = "{{ amenity.name }}"
+                         lat = "{{ amenity.lat }}"
+                         lon = "{{ amenity.lon }}">
+                    </div>
+                {% endfor %}
+            </div>
+        {% endblock %}
+    </body>
+
+    {% block extra_footer %}
+
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+            <div class="toast-header">
+                <strong class="mr-auto">Location Information</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body"></div>
+        </div>
+
+        <script>
+            $("#body_div").css({"top": $(".site-header").height() + 10, "position": "absolute"});
+                $(".toast").css({
+                    "top": ($(document).height() / 5),
+                    "left": ($(document).width() / 5),
+                    "position": "fixed",
+                    "z-index": 2000
+                });
+
+        </script>
+
+    <script>
+        let HOST = location.protocol + "//" + location.host;
+        let locationMarker;
+        let circle;
+        $("#map").css({
+            "width": "100%",
+            "height": $(document).height() - ($(".site-header").height() + $("#footer").height() + 45)});
+        function map_init_basic(map, options) {
+            const osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+            map.addLayer(osm);
+            let pos;
+            map.setView([53.5, -8.5], 11);
+            updateLocation(map);
+            map.on('touchstart click dblclick ', function () {
+                updateLocation(map);
+            });
+        }
+        function updateLocation(map) {
+            navigator.geolocation.getCurrentPosition(function (pos) {
+                setMapToCurrentLocation(map, pos);
+                update_db(pos);
+                },
+                function (err) {
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 30000
+                }
+            );
+        }
+
+        //setting the locations of properties on the map
+        function setMapToCurrentLocation(map, pos) {
+            console.log("In setMapToCurrentLocation.");
+            $('.card').each(function() {
+                var amenity = $(this).attr('amenity');
+                var name = $(this).attr('name');
+                var lat = $(this).attr('lat');
+                var lon = $(this).attr('lon');
+
+                let myLatLon = L.latLng(lat, lon);
+                locationMarker = new L.Marker(myLatLon).addTo(map);
+                locationMarker.bindPopup("<b>"+amenity+"</b><br>"+name).openPopup();
+            });
+
+            let myLatLon = L.latLng('{{ amenity_list.0.lat}}', '{{amenity_list.0.lon}}');
+
+            map.flyTo(myLatLon, 16);
+        }
+
+        function update_db(pos) {
+            let locString = pos.coords.longitude + ", " + pos.coords.latitude;
+
+            $.ajax({
+                type: "POST",
+                url :  "{% url 'updatedb' %}",
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                data: {
+                    point: locString
+                }
+            }).done(function (data, status, xhr) {
+                console.log(data["message"])
+                var originalMsg = $(".toast-body").html();
+                //$(".toast-body").html(originalMsg + "<br/>Updated database<br/>" + data["message"]);
+
+            }).fail(function (xhr, status, error) {
+                console.log('hi' + error);
+                var originalMsg = $(".toast-body").html();
+                //$(".toast-body").html(originalMsg + "<br/>" + error);
+            }).always(function () {
+                console.log("find_loc_ed finished");
+                //$(".toast").toast('show');
+            });
+        }
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+    </script>
+{% endblock %}
+{% endblock content %}
+
+

@@ -7,7 +7,17 @@
         <h1>{% block title %} {{ prop.address }} {% endblock title %}</h1>
         <p class="card-text ">Posted on : {{ prop.date_posted }}</p>
         <p class="card-text ">Rent: {{ prop.rent }}</p>
-        <a href="{% url 'overpass'  %}">Amenities</a>
+          <form action = "{% url 'overpass' %}" method = "POST">
+              {% csrf_token %}
+              <fieldset>
+                  <input type = "text" id = "lat" name = "lat"
+                         value = "{{ prop.lat }}" style= "display:none"/>
+                  <input type = "text" id = "lon" name = "lon"
+                         value = "{{ prop.lon }}" style= "display:none"/>
+                  <input type="submit" value="Amenities">
+              </fieldset>
+          </form>
+{#        <a href="{% url 'overpass' %}">Amenities</a>#}
       </div>
     </div>
   </div>

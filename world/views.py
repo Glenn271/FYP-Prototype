@@ -299,17 +299,25 @@ def search(request):
     return render(request, 'world/search.html', {'form' : form})
 
 def overpass_test(request):
-    result = get_amenities()
-    return render(request, 'world/home.html')
+    context = {}
 
-def get_amenities():
+    lat = request.POST['lat']
+    lon = request.POST['lon']
+
+    print(lat, lon)
+
+    amenity_list = get_amenities(lat, lon)
+
+    context['amenity_list'] = amenity_list
+    return render(request, 'world/amenities.html', context)
+
+def get_amenities(lat, lon):
+    amenity_list = []
     api = overpy.Overpass()
 
-    lat = 53.3244
-    lon = -6.3972
     query = ("""
                 (
-                  node["amenity"](around:1000,{}, {});
+                  node["amenity"](around:1000,{0}, {1});
                 );
                 out body;
                 >;
@@ -317,6 +325,16 @@ def get_amenities():
     result = api.query(query)
 
     for node in result.nodes:
-        print(node.tags, node.lat, node.lon)
+        amenity = node.tags.get("amenity", "n/a")
+        name = node.tags.get("name", "n/a")
+        print(amenity, name, node.lat, node.lon)
 
-    return result
+        area_amenity = {
+            'amenity' : amenity,
+            'name' : name,
+            'lat' : node.lat,
+            'lon' : node.lon
+        }
+
+        amenity_list.append(area_amenity)
+    return amenity_list
