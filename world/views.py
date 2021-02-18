@@ -298,30 +298,34 @@ def search(request):
         form = PropertySearchForm()
     return render(request, 'world/search.html', {'form' : form})
 
+
 def overpass_test(request):
     context = {}
 
+    radius = int(request.POST['radius'])
+    radius *= 1000
     lat = request.POST['lat']
     lon = request.POST['lon']
 
-    print(lat, lon)
+    print(radius,lat, lon)
 
-    amenity_list = get_amenities(lat, lon)
+    amenity_list = get_amenities(radius, lat, lon)
 
     context['amenity_list'] = amenity_list
     return render(request, 'world/amenities.html', context)
 
-def get_amenities(lat, lon):
+
+def get_amenities(radius, lat, lon):
     amenity_list = []
     api = overpy.Overpass()
 
     query = ("""
                 (
-                  node["amenity"](around:1000,{0}, {1});
+                  node["amenity"](around:{0},{1}, {2});
                 );
                 out body;
                 >;
-            """).format(lat, lon)
+            """).format(radius, lat, lon)
     result = api.query(query)
 
     for node in result.nodes:
