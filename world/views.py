@@ -322,8 +322,9 @@ def get_amenities(radius, lat, lon):
     query = ("""
                 (
                   node["amenity"](around:{0},{1}, {2});
+                  way["amenity"](around:{0},{1}, {2});
                 );
-                out body;
+                out center;
                 >;
             """).format(radius, lat, lon)
     result = api.query(query)
@@ -341,4 +342,19 @@ def get_amenities(radius, lat, lon):
         }
 
         amenity_list.append(area_amenity)
+
+    for way in result.ways:
+        amenity = way.tags.get("amenity", "n/a")
+        name = way.tags.get("name", "n/a")
+        print(amenity, name, way.center_lat, way.center_lon)
+
+        area_amenity = {
+            'amenity': amenity,
+            'name': name,
+            'lat': node.lat,
+            'lon': node.lon
+        }
+
+        amenity_list.append(area_amenity)
+
     return amenity_list
