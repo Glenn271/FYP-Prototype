@@ -311,7 +311,13 @@ def overpass_test(request):
 
     amenity_list = get_amenities(radius, lat, lon)
 
+    source = {
+        'lat' : lat,
+        'lon' : lon
+    }
+
     context['amenity_list'] = amenity_list
+    context['source'] = source
     return render(request, 'world/amenities.html', context)
 
 

@@ -6,15 +6,19 @@
     {% load crispy_forms_tags %}
     {% load crispy_forms_filters %}
     <head>
-        {% leaflet_js %}
         {% leaflet_css %}
+        {% leaflet_js %}
         {% block head_title %}{% trans "Amenities" %}{% endblock %}
         {% block extra_header %}
             <style>
                 #map {width: 70vw;height: 70vh;}
             </style>
         {% endblock %}
-
+    <!--LOADS markercluster css-->
+        <link href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" type="text/css" rel="stylesheet">
+        <link href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" type="text/css" rel="stylesheet">
+        <!--LOADS markercluster plugin-->
+        <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
     </head>
     <body>
         {% block body_content %}
@@ -65,8 +69,6 @@
             "width": "100%",
             "height": $(document).height() - ($(".site-header").height() + $("#footer").height() + 45)});
         function map_init_basic(map, options) {
-            const osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-            map.addLayer(osm);
             let pos;
             map.setView([53.5, -8.5], 11);
             updateLocation(map);
@@ -88,9 +90,28 @@
             );
         }
 
-        //setting the locations of properties on the map
+        {#//setting the locations of properties on the map#}
+        {#function setMapToCurrentLocation(map, pos) {#}
+        {#    console.log("In setMapToCurrentLocation.");#}
+        {#    $('.card').each(function() {#}
+        {#        var amenity = $(this).attr('amenity');#}
+        {#        var name = $(this).attr('name');#}
+        {#        var lat = $(this).attr('lat');#}
+        {#        var lon = $(this).attr('lon');#}
+        {##}
+        {#        let myLatLon = L.latLng(lat, lon);#}
+        {#        locationMarker = new L.Marker(myLatLon).addTo(map);#}
+        {#        locationMarker.bindPopup("<b>"+amenity+"</b><br>"+name).openPopup();#}
+        {#    });#}
+        {##}
+        {#    let myLatLon = L.latLng('{{ amenity_list.0.lat}}', '{{amenity_list.0.lon}}');#}
+        {##}
+        {#    map.flyTo(myLatLon, 16);#}
+
+
         function setMapToCurrentLocation(map, pos) {
             console.log("In setMapToCurrentLocation.");
+            var markers = L.markerClusterGroup();
             $('.card').each(function() {
                 var amenity = $(this).attr('amenity');
                 var name = $(this).attr('name');
@@ -98,14 +119,16 @@
                 var lon = $(this).attr('lon');
 
                 let myLatLon = L.latLng(lat, lon);
-                locationMarker = new L.Marker(myLatLon).addTo(map);
-                locationMarker.bindPopup("<b>"+amenity+"</b><br>"+name).openPopup();
+                markers.addLayer(L.marker(myLatLon));
+
             });
+            map.addLayer(markers);
 
             let myLatLon = L.latLng('{{ amenity_list.0.lat}}', '{{amenity_list.0.lon}}');
 
             map.flyTo(myLatLon, 16);
         }
+
 
         function update_db(pos) {
             let locString = pos.coords.longitude + ", " + pos.coords.latitude;
