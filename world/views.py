@@ -313,7 +313,8 @@ def overpass_test(request):
 
     source = {
         'lat' : lat,
-        'lon' : lon
+        'lon' : lon,
+        'radius' : radius
     }
 
     context['amenity_list'] = amenity_list

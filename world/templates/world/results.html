@@ -146,7 +146,7 @@
 
                 let myLatLon = L.latLng(lat, lon);
                 locationMarker = new L.Marker(myLatLon).addTo(map);
-                locationMarker.bindPopup("<b>"+address+"</b><br>"+rent).openPopup();
+                locationMarker.bindPopup("<b>"+address+"</b><br>"+rent);
             });
 
             let myLatLon = L.latLng('{{ prop_list.0.lat}}', '{{prop_list.0.lon}}');

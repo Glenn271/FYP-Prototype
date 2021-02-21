@@ -90,25 +90,6 @@
             );
         }
 
-        {#//setting the locations of properties on the map#}
-        {#function setMapToCurrentLocation(map, pos) {#}
-        {#    console.log("In setMapToCurrentLocation.");#}
-        {#    $('.card').each(function() {#}
-        {#        var amenity = $(this).attr('amenity');#}
-        {#        var name = $(this).attr('name');#}
-        {#        var lat = $(this).attr('lat');#}
-        {#        var lon = $(this).attr('lon');#}
-        {##}
-        {#        let myLatLon = L.latLng(lat, lon);#}
-        {#        locationMarker = new L.Marker(myLatLon).addTo(map);#}
-        {#        locationMarker.bindPopup("<b>"+amenity+"</b><br>"+name).openPopup();#}
-        {#    });#}
-        {##}
-        {#    let myLatLon = L.latLng('{{ amenity_list.0.lat}}', '{{amenity_list.0.lon}}');#}
-        {##}
-        {#    map.flyTo(myLatLon, 16);#}
-
-
         function setMapToCurrentLocation(map, pos) {
             console.log("In setMapToCurrentLocation.");
             var markers = L.markerClusterGroup();
@@ -119,16 +100,23 @@
                 var lon = $(this).attr('lon');
 
                 let myLatLon = L.latLng(lat, lon);
-                markers.addLayer(L.marker(myLatLon));
+                {#let locationMarker = new L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name);#}
+                {#locationMarker.bindPopup("<b>"+amenity+"</b><br>"+name).openPopup();#}
+
+                markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
 
             });
             map.addLayer(markers);
 
-            let myLatLon = L.latLng('{{ amenity_list.0.lat}}', '{{amenity_list.0.lon}}');
-
+            let myLatLon = L.latLng('{{source.lat}}', '{{source.lon}}');
+            let radius = L.circle(myLatLon, {
+                color : 'grey',
+                fillColor : 'grey',
+                fillOpacity : 0.2,
+                radius : {{ source.radius }}
+            }).addTo(map);
             map.flyTo(myLatLon, 16);
         }
-
 
         function update_db(pos) {
             let locString = pos.coords.longitude + ", " + pos.coords.latitude;
