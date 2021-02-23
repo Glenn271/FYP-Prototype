@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect
 from django.views.generic import DetailView
-from .forms import AmenitySearchForm,PropertySearchForm
+from .forms import PropertySearchForm
 from .models import TestProperty
 import requests
 from bs4 import BeautifulSoup
 import urllib.parse
 import re
 import overpy
-
+import numpy as np
 
 def home(request):
     return render(request, 'world/home.html')
@@ -223,6 +223,8 @@ def find_latest_info(city):
 def search(request):
     context = {}
     prop_list = []
+    houseTypes = ['Apartment ', 'Terraced House ', 'Semi-Detached ',
+                  'Detached ', 'Bungalow ', 'Country House ', 'Studio ']
 
     if request.method == 'POST':
         form = PropertySearchForm(request.POST)
@@ -231,7 +233,24 @@ def search(request):
             city = form.cleaned_data['city']
             maxRent = request.POST['rent']
             rentPriority = request.POST['rent_priority']
+            housePriority = request.POST['house_priority']
             houseType = form.cleaned_data['house_type']
+
+            print(rentPriority, housePriority, houseType)
+
+            weights = np.array([rentPriority, housePriority]).astype(np.float)
+            weight_sum = np.sum(weights)
+            print(weights, weight_sum)
+
+            balanced = weights/weight_sum
+            print(balanced)
+
+            #check if balanced to 1
+            total_balanced = np.sum(balanced)
+            print(total_balanced)
+
+            rent_weight = balanced[0]
+            house_weight = balanced[1]
 
             search_props = TestProperty.objects.filter(city=city)
 
@@ -251,6 +270,7 @@ def search(request):
 
                 print ("Ideal vs Actual " + str(ideal_rent) + " " + str(actual_rent))
                 rent_sim = 0
+                house_sim = 0
 
                 if actual_rent != 0:
                     diff = actual_rent - ideal_rent
@@ -264,7 +284,15 @@ def search(request):
                     else:
                         rent_sim = 0
 
-                rent_sim = float(rent_sim * float(rentPriority))
+                # ideal vs actual house type
+                for house in houseType:
+                    if house in houseTypes or house == "Any":
+                        house_sim = 1
+
+                rent_weighted = float(rent_sim * float(rent_weight))
+                house_weighted = float(house_sim * float(house_weight))
+
+                total_sim = rent_weighted + house_weighted
 
                 # making JSON object for property data
                 property = {
@@ -279,13 +307,14 @@ def search(request):
                     'beds': 0,
                     'baths': 0,
                     'house': prop.propertyType,
-                    'house_sim': 0
+                    'house_sim': house_sim,
+                    'total_sim' : total_sim
                 }
                 prop_list.append(property)
 
             # sort based on rent similarity
 
-            prop_list.sort(key=lambda k: k['rent_sim'], reverse=True)
+            prop_list.sort(key=lambda k: k['total_sim'], reverse=True)
 
             #context
             context['prop_list'] = prop_list
