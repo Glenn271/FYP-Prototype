@@ -37,6 +37,15 @@
                          date_posted = "{{ prop.date_posted }}">
 
                       <div class="card-body">
+                        {% if prop == prop_list.0 %}
+                            <i class="fas fa-star" style = "color:darkgoldenrod;"></i>
+                            <p class="best-match">Best Match</p>
+                            <style>
+                                .best-match{
+                                    color: darkgoldenrod;
+                                }
+                            </style>
+                        {% endif %}
                         <h5 class="card-title">{{ prop.address }}</h5>
                         <p class="card-text">{{ prop.rent }}</p>
                         <p class="card-text">Posted {{ prop.date_posted|date:"F d, Y" }}</p>

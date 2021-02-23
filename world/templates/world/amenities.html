@@ -100,8 +100,6 @@
                 var lon = $(this).attr('lon');
 
                 let myLatLon = L.latLng(lat, lon);
-                {#let locationMarker = new L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name);#}
-                {#locationMarker.bindPopup("<b>"+amenity+"</b><br>"+name).openPopup();#}
 
                 markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
 
