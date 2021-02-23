@@ -331,7 +331,7 @@ def search(request):
 def overpass_test(request):
     context = {}
 
-    radius = int(request.POST['radius'])
+    radius = float(request.POST['radius'])
     radius *= 1000
     lat = request.POST['lat']
     lon = request.POST['lon']
