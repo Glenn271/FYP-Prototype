@@ -321,7 +321,7 @@ def search(request):
             context['form'] = form
 
             #search results if form is valid
-            return render(request, 'world/results.html', context)
+            return render(request, 'world/search.html', context)
 
     else:
         form = PropertySearchForm()
