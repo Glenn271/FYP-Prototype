@@ -6,6 +6,7 @@ CITIES = [
     ('Clondalkin', 'Clondalkin'),
     ('Finglas', 'Finglas'),
     ('Tallaght', 'Tallaght'),
+    ('Ticknock', 'Ticknock')
 ]
 
 HOUSE_TYPE = [

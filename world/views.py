@@ -3,6 +3,8 @@ from django.views.generic import DetailView
 from .forms import PropertySearchForm
 from .models import TestProperty
 import requests
+from datetime import datetime
+from django.utils import timezone
 from bs4 import BeautifulSoup
 import urllib.parse
 import re
@@ -165,57 +167,67 @@ def find_latest_info(city):
 
     page = requests.get("https://www.myhome.ie/rentals/dublin/property-to-rent-in-{0}".format(city))
     soup = BeautifulSoup(page.content, 'html.parser')
-    propertyCard = soup.find_all(class_="PropertyListingCard")
 
-    for prop in propertyCard:
-        propList = prop
-        propAddress = propList.find(class_="PropertyListingCard__Address").get_text()
-        rentPrice = propList.find(class_="PropertyListingCard__Price").get_text()
+    noProp = soup.find_all(class_="NoResultsCard py-5")
+    print("noProp = " + str(noProp))
 
-        #property info
-        infoSpans = propList.find_all('span', {'class' : 'PropertyInfoStrip__Detail ng-star-inserted'})
-        infoLines = [span.get_text() for span in infoSpans]
+    #if no properties match search
+    if noProp:
+        return []
 
-        print(infoLines)
+    #if properties are found
+    else:
+        propertyCard = soup.find_all(class_="PropertyListingCard")
 
-        beds = baths = house = 'N/A'
-        houseTypes = ['Apartment ', 'Terraced House ', 'Semi-Detached ',
-                      'Detached ', 'Bungalow ', 'Country House ', 'Studio ']
+        for prop in propertyCard:
+            propList = prop
+            propAddress = propList.find(class_="PropertyListingCard__Address").get_text()
+            rentPrice = propList.find(class_="PropertyListingCard__Price").get_text()
 
-        #assign values for prop info
-        for line in infoLines:
-            if ('bed' in line):
-                beds = line
-            if('bath' in line):
-                baths = line
-            if(line in houseTypes):
-                house = line
+            #property info
+            infoSpans = propList.find_all('span', {'class' : 'PropertyInfoStrip__Detail ng-star-inserted'})
+            infoLines = [span.get_text() for span in infoSpans]
+
+            print(infoLines)
+
+            beds = baths = house = 'N/A'
+            houseTypes = ['Apartment ', 'Terraced House ', 'Semi-Detached ',
+                          'Detached ', 'Bungalow ', 'Country House ', 'Studio ']
+
+            #assign values for prop info
+            for line in infoLines:
+                if ('bed' in line):
+                    beds = line
+                if('bath' in line):
+                    baths = line
+                if(line in houseTypes):
+                    house = line
 
 
-        #using Nominatim for lat/lon info of property
-        url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(propAddress) + '?format=json'
-        response = requests.get(url).json()
-
-        try:
-            lat = response[0]["lat"]
-            lon = response[0]["lon"]
-
-        #find default coords of city if difficulties finding address
-        except:
-            url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(
-                city) + '?format=json'
+            #using Nominatim for lat/lon info of property
+            url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(propAddress) + '?format=json'
             response = requests.get(url).json()
-            lat = response[0]["lat"]
-            lon = response[0]["lon"]
 
-        print(propAddress)
-        print(lat + " " + lon)
+            try:
+                lat = response[0]["lat"]
+                lon = response[0]["lon"]
 
-        listing = TestProperty(address=propAddress, city = city, lat=lat,
-                               lon = lon, rent=rentPrice, propertyType = house)
+            #find default coords of city if difficulties finding address
+            except:
+                url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(
+                    city) + '?format=json'
+                response = requests.get(url).json()
+                lat = response[0]["lat"]
+                lon = response[0]["lon"]
 
-        listing.save()
-        search_props.append(listing)
+            print(propAddress)
+            print(lat + " " + lon)
+
+            listing = TestProperty(address=propAddress, city = city, lat=lat,
+                                   lon = lon, rent=rentPrice, propertyType = house)
+
+            listing.save()
+            search_props.append(listing)
 
     return search_props
 
@@ -229,6 +241,8 @@ def search(request):
     if request.method == 'POST':
         form = PropertySearchForm(request.POST)
 
+        context['form'] = form
+
         if form.is_valid():
             city = form.cleaned_data['city']
             maxRent = request.POST['rent']
@@ -236,6 +250,7 @@ def search(request):
             housePriority = request.POST['house_priority']
             houseType = form.cleaned_data['house_type']
 
+            print(city)
             print(rentPriority, housePriority, houseType)
 
             weights = np.array([rentPriority, housePriority]).astype(np.float)
@@ -256,72 +271,88 @@ def search(request):
 
             if not search_props:
                 search_props = find_latest_info(city)
+                print(search_props)
 
-            for prop in search_props:
-                #extract number from rent price p/m
-                try:
-                    rentNumeric = re.search('€(.+?) ',prop.rent).group(1)
-                    rentNumeric = rentNumeric.replace(',', '')
-                except AttributeError:
-                    rentNumeric = 0
+            else:
+                last_updated = datetime.strftime(search_props[0].date_posted, '%d-%m-%Y')
+                time_now = datetime.strftime(timezone.now(), '%d-%m-%Y')
 
-                ideal_rent = int(maxRent)
-                actual_rent = int(rentNumeric)
+                print(last_updated, time_now)
 
-                print ("Ideal vs Actual " + str(ideal_rent) + " " + str(actual_rent))
-                rent_sim = 0
-                house_sim = 0
+                if last_updated != time_now:
+                    TestProperty.objects.filter(city=city).delete()
+                    search_props = find_latest_info(city)
 
-                if actual_rent != 0:
-                    diff = actual_rent - ideal_rent
+            if not search_props:
+                context['noProp'] = True
+                return render(request, 'world/search.html', context)
 
-                    if (diff <= 0):
-                        rent_sim = 1
-                    elif (diff > 0 and diff <= (ideal_rent * 0.33)):
-                        rent_sim = 0.8
-                    elif(diff > (ideal_rent * 0.33) and diff <= (ideal_rent * 0.67)):
-                        rent_sim = 0.5
-                    else:
-                        rent_sim = 0
+            else:
+                for prop in search_props:
+                    #extract number from rent price p/m
+                    try:
+                        rentNumeric = re.search('€(.+?) ',prop.rent).group(1)
+                        rentNumeric = rentNumeric.replace(',', '')
+                    except AttributeError:
+                        rentNumeric = 0
 
-                # ideal vs actual house type
-                for house in houseType:
-                    if house in houseTypes or house == "Any":
-                        house_sim = 1
+                    ideal_rent = int(maxRent)
+                    actual_rent = int(rentNumeric)
 
-                rent_weighted = float(rent_sim * float(rent_weight))
-                house_weighted = float(house_sim * float(house_weight))
+                    print ("Ideal vs Actual " + str(ideal_rent) + " " + str(actual_rent))
+                    rent_sim = 0
+                    house_sim = 0
 
-                total_sim = rent_weighted + house_weighted
+                    if actual_rent != 0:
+                        diff = actual_rent - ideal_rent
 
-                # making JSON object for property data
-                property = {
-                    'id' : prop.id,
-                    'address': prop.address,
-                    'city': prop.city,
-                    'date_posted':prop.date_posted,
-                    'lat': prop.lat,
-                    'lon': prop.lon,
-                    'rent': prop.rent,
-                    'rent_sim' : rent_sim,
-                    'beds': 0,
-                    'baths': 0,
-                    'house': prop.propertyType,
-                    'house_sim': house_sim,
-                    'total_sim' : total_sim
-                }
-                prop_list.append(property)
+                        if (diff <= 0):
+                            rent_sim = 1
+                        elif (diff > 0 and diff <= (ideal_rent * 0.33)):
+                            rent_sim = 0.8
+                        elif(diff > (ideal_rent * 0.33) and diff <= (ideal_rent * 0.67)):
+                            rent_sim = 0.5
+                        else:
+                            rent_sim = 0
 
-            # sort based on rent similarity
+                    # ideal vs actual house type
+                    for house in houseType:
+                        if house in houseTypes or house == "Any":
+                            house_sim = 1
 
-            prop_list.sort(key=lambda k: k['total_sim'], reverse=True)
+                    rent_weighted = float(rent_sim * float(rent_weight))
+                    house_weighted = float(house_sim * float(house_weight))
 
-            #context
-            context['prop_list'] = prop_list
-            context['form'] = form
+                    total_sim = rent_weighted + house_weighted
 
-            #search results if form is valid
-            return render(request, 'world/search.html', context)
+                    # making JSON object for property data
+                    property = {
+                        'id' : prop.id,
+                        'address': prop.address,
+                        'city': prop.city,
+                        'date_posted':prop.date_posted,
+                        'lat': prop.lat,
+                        'lon': prop.lon,
+                        'rent': prop.rent,
+                        'rent_sim' : rent_sim,
+                        'beds': 0,
+                        'baths': 0,
+                        'house': prop.propertyType,
+                        'house_sim': house_sim,
+                        'total_sim' : total_sim
+                    }
+                    prop_list.append(property)
+
+                # sort based on rent similarity
+
+                prop_list.sort(key=lambda k: k['total_sim'], reverse=True)
+
+                #context
+                context['prop_list'] = prop_list
+                context['form'] = form
+
+                #search results if form is valid
+                return render(request, 'world/search.html', context)
 
     else:
         form = PropertySearchForm()
