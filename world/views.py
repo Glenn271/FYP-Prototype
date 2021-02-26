@@ -94,7 +94,8 @@ class PropDetailView(DetailView):
 #                         rentNumeric = ''
 #
 #                     #using Nominatim for lat/lon info of property
-#                     url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(propAddress) + '?format=json'
+#                     url = 'https://nominatim.openstreetmap.org/search/'
+#                     + urllib.parse.quote(propAddress) + '?format=json'
 #                     response = requests.get(url).json()
 #
 #                     try:
