@@ -22,6 +22,7 @@
     </head>
     <body>
         {% block body_content %}
+
             {% leaflet_map "map" callback="window.map_init_basic" %}
             <br>
             <br>
@@ -90,43 +91,168 @@
             );
         }
 
-        function setMapToCurrentLocation(map, pos) {
-            console.log("In setMapToCurrentLocation.");
-            var markers = L.markerClusterGroup();
-            $('.card').each(function() {
-                var amenity = $(this).attr('amenity');
-                var name = $(this).attr('name');
-                var lat = $(this).attr('lat');
-                var lon = $(this).attr('lon');
+        {#function setMapToCurrentLocation(map, pos) {#}
+        {#    console.log("In setMapToCurrentLocation.");#}
+        {#    var markers = L.markerClusterGroup();#}
+        {#    $('.card').each(function() {#}
+        {#        var amenity = $(this).attr('amenity');#}
+        {#        var name = $(this).attr('name');#}
+        {#        var lat = $(this).attr('lat');#}
+        {#        var lon = $(this).attr('lon');#}
+        {##}
+        {#        let myLatLon = L.latLng(lat, lon);#}
+        {##}
+        {#        markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));#}
+        {##}
+        {#    });#}
+        {#    map.addLayer(markers);#}
+        {##}
+        {#    let myLatLon = L.latLng('{{source.lat}}', '{{source.lon}}');#}
+        {#    let radius = L.circle(myLatLon, {#}
+        {#        color : 'grey',#}
+        {#        fillColor : 'grey',#}
+        {#        fillOpacity : 0.2,#}
+        {#        radius : {{ source.radius }}#}
+        {#    }).addTo(map);#}
+        {##}
+        {#    const houseIcon = L.divIcon({#}
+        {#        html: '<i class="fas fa-home"></i>',#}
+        {#        iconSize: [20, 20],#}
+        {#        className: 'fa_icon'#}
+        {#    });#}
+        {##}
+        {#    L.marker(myLatLon, {#}
+        {#        icon:houseIcon#}
+        {#    }).addTo(map);#}
+        {##}
+        {#    map.flyTo(myLatLon, 16);#}
+        {##}
 
-                let myLatLon = L.latLng(lat, lon);
 
-                markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+    function setMapToCurrentLocation(map, pos) {
+        console.log("In setMapToCurrentLocation.");
+        var all_markers = L.markerClusterGroup();
+        var dining_markers = L.markerClusterGroup();
+        var education_markers = L.markerClusterGroup();
+        var transportation_markers = L.markerClusterGroup();
+        var financial_markers = L.markerClusterGroup();
+        var healthcare_markers = L.markerClusterGroup();
+        var entertainment_markers = L.markerClusterGroup();
+        var other_markers = L.markerClusterGroup();
 
-            });
-            map.addLayer(markers);
+        var dining = ['bar', 'bbq', 'biergarten', 'cafe', 'drinking_water', 'fast_food',
+        'ice_cream', 'pub', 'restaurant']
 
-            let myLatLon = L.latLng('{{source.lat}}', '{{source.lon}}');
-            let radius = L.circle(myLatLon, {
-                color : 'grey',
-                fillColor : 'grey',
-                fillOpacity : 0.2,
-                radius : {{ source.radius }}
-            }).addTo(map);
+        var education = ['college', 'driving_school', 'kindergarten', 'language_school', 'library',
+        'toy_library', 'music_school', 'school', 'university']
 
-            const houseIcon = L.divIcon({
-                html: '<i class="fas fa-home"></i>',
-                iconSize: [20, 20],
-                className: 'fa_icon'
-            });
+        var transportation = ['bicycle_parking', 'bicycle_repair_station', 'kindergarten', 'bicycle_rental', 'boat_rental',
+        'boat_sharing', 'bus_station', 'car_rental', 'car_sharing',
+        'car_wash', 'vehicle_inspection', 'charging_station', 'ferry_terminal', 'fuel',
+        'grit_bin', 'motorcycle_parking', 'parking', 'parking_entrance', 'parking_space', 'taxi']
 
-            L.marker(myLatLon, {
-                icon:houseIcon
-            }).addTo(map);
+        var financial = ['atm', 'bank', 'bureau-de-change']
 
-            map.flyTo(myLatLon, 16);
+        var healthcare = ['baby_hatch', 'clinic', 'kindergarten', 'dentist', 'doctors',
+        'hospital', 'nursing_home', 'pharmacy', 'social_facility', 'veterinary']
+
+        var entertainment = ['arts_centre', 'casino', 'cinema', 'community_centre',
+        'gambling', 'nightclub', 'planetarium', 'public_bookcase', 'social_centre',
+        'studio', 'theatre']
+
+        var others = ['animal_boarding', 'animal_breeding', 'animal_shelter', 'baking_oven',
+        'bench', 'childcare', 'clock', 'conference_centre', 'courthouse', 'crematorium',
+        'dive_centre', 'dog_toilet', 'embassy',
+        'fire_station', 'funeral_hall', 'give_box', 'grave_yard',
+        'internet_cafe', 'kitchen', 'lounger', 'marketplace',
+        'monastery', 'photo_booth', 'place_of_mourning', 'place_of_worship', 'police', 'post_box',
+        'gambling', 'nightclub', 'planetarium', 'public_bookcase', 'social_centre',
+        'post_depot', 'post_office', 'recycling', 'shelter', 'telephone', 'toilets', 'townhall',
+        'vending_machine', 'waste_basket', 'waste_disposal', 'water_point'
+        ]
+
+        $('.card').each(function() {
+            var amenity = $(this).attr('amenity');
+            var name = $(this).attr('name');
+            var lat = $(this).attr('lat');
+            var lon = $(this).attr('lon');
+
+            let myLatLon = L.latLng(lat, lon);
+
+            if (dining.includes(amenity)){
+                dining_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+            }
+
+            else if (education.includes(amenity)){
+                education_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+            }
+
+            else if (transportation.includes(amenity)){
+                transportation_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+            }
+
+            else if (financial.includes(amenity)){
+                financial_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+            }
+
+            else if (healthcare.includes(amenity)){
+                healthcare_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+            }
+
+            else if (entertainment.includes(amenity)){
+                entertainment_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+            }
+
+            else{
+                other_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+            }
+
+            all_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+
+        });
+        map.addLayer(all_markers);
+        map.addLayer(dining_markers);
+        map.addLayer(education_markers);
+        map.addLayer(transportation_markers);
+        map.addLayer(financial_markers);
+        map.addLayer(healthcare_markers);
+        map.addLayer(entertainment_markers);
+        map.addLayer(other_markers);
+
+        var amenity_markers = {
+            "All" : all_markers,
+            "Food and Drink" : dining_markers,
+            "Education" : education_markers,
+            "Transport" : transportation_markers,
+            "Financial Services" : financial_markers,
+            "Healthcare" : healthcare_markers,
+            "Entertainment" : entertainment_markers,
+            "Other Amenities" : other_markers
         }
 
+        L.control.layers(amenity_markers).addTo(map);
+
+        let myLatLon = L.latLng('{{source.lat}}', '{{source.lon}}');
+        let radius = L.circle(myLatLon, {
+            color : 'grey',
+            fillColor : 'grey',
+            fillOpacity : 0.2,
+            radius : {{ source.radius }}
+        }).addTo(map);
+
+        const houseIcon = L.divIcon({
+            html: '<i class="fas fa-home"></i>',
+            iconSize: [20, 20],
+            className: 'fa_icon'
+        });
+
+        L.marker(myLatLon, {
+            icon:houseIcon
+        }).addTo(map);
+
+        map.flyTo(myLatLon, 16);
+
+    }
         function update_db(pos) {
             let locString = pos.coords.longitude + ", " + pos.coords.latitude;
 
