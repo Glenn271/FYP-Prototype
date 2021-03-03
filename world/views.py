@@ -166,43 +166,33 @@ class PropDetailView(DetailView):
 def find_latest_info(city):
     search_props = []
 
-    page = requests.get("https://www.myhome.ie/rentals/dublin/property-to-rent-in-{0}".format(city))
+    page = requests.get("https://www.daft.ie/property-for-rent/{0}-dublin".format(city.lower()))
     soup = BeautifulSoup(page.content, 'html.parser')
 
-    noProp = soup.find_all(class_="NoResultsCard py-5")
+    noProp = soup.find_all(class_="ZeroResults__Container-sc-193ko9u-2 UZhCx")
     print("noProp = " + str(noProp))
 
-    #if no properties match search
+    allProp = soup.find("h1", {"data-testid":"search-h1"}).get_text()
+    cleaned_city = city.replace("-", " ")
+
+    # if no properties match search
     if noProp:
         return []
 
     #if properties are found
     else:
-        propertyCard = soup.find_all(class_="PropertyListingCard")
+        propertyCard = soup.find_all(class_="SearchPage__Result-gg133s-2 itNYNv")
+        print(list(propertyCard))
 
         for prop in propertyCard:
             propList = prop
-            propAddress = propList.find(class_="PropertyListingCard__Address").get_text()
-            rentPrice = propList.find(class_="PropertyListingCard__Price").get_text()
+            propAddress = propList.find(class_="TitleBlock__Address-sc-1avkvav-7 knPImU").get_text()
+            rentPrice = propList.find(class_="TitleBlock__Price-sc-1avkvav-3 pJtsY").p.text
 
-            #property info
-            infoSpans = propList.find_all('span', {'class' : 'PropertyInfoStrip__Detail ng-star-inserted'})
-            infoLines = [span.get_text() for span in infoSpans]
-
-            print(infoLines)
-
-            beds = baths = house = 'N/A'
-            houseTypes = ['Apartment ', 'Terraced House ', 'Semi-Detached ',
-                          'Detached ', 'Bungalow ', 'Country House ', 'Studio ']
-
-            #assign values for prop info
-            for line in infoLines:
-                if ('bed' in line):
-                    beds = line
-                if('bath' in line):
-                    baths = line
-                if(line in houseTypes):
-                    house = line
+            # property info
+            beds = propList.find("p", {"data-testid": "beds"}).get_text()
+            baths = propList.find("p", {"data-testid": "baths"}).get_text()
+            daftHouse = propList.find("p", {"data-testid": "property-type"}).get_text()
 
 
             #using Nominatim for lat/lon info of property
@@ -225,7 +215,8 @@ def find_latest_info(city):
             print(lat + " " + lon)
 
             listing = TestProperty(address=propAddress, city = city, lat=lat,
-                                   lon = lon, rent=rentPrice, propertyType = house)
+                                   lon = lon, rent=rentPrice, beds = beds, baths = baths,
+                                   propertyType = daftHouse)
 
             listing.save()
             search_props.append(listing)
@@ -236,8 +227,8 @@ def find_latest_info(city):
 def search(request):
     context = {}
     prop_list = []
-    houseTypes = ['Apartment ', 'Terraced House ', 'Semi-Detached ',
-                  'Detached ', 'Bungalow ', 'Country House ', 'Studio ']
+    houseTypes = ['Apartment', 'Terraced House', 'Semi-Detached',
+                  'Detached', 'Bungalow', 'Country House', 'Studio']
 
     if request.method == 'POST':
         form = PropertySearchForm(request.POST)
@@ -274,15 +265,15 @@ def search(request):
                 search_props = find_latest_info(city)
                 print(search_props)
 
-            else:
-                last_updated = datetime.strftime(search_props[0].date_posted, '%d-%m-%Y')
-                time_now = datetime.strftime(timezone.now(), '%d-%m-%Y')
-
-                print(last_updated, time_now)
-
-                if last_updated != time_now:
-                    TestProperty.objects.filter(city=city).delete()
-                    search_props = find_latest_info(city)
+            # else:
+            #     last_updated = datetime.strftime(search_props[0].date_posted, '%d-%m-%Y')
+            #     time_now = datetime.strftime(timezone.now(), '%d-%m-%Y')
+            #
+            #     print(last_updated, time_now)
+            #
+            #     if last_updated != time_now:
+            #         TestProperty.objects.filter(city=city).delete()
+            #         search_props = find_latest_info(city)
 
             if not search_props:
                 context['noProp'] = True

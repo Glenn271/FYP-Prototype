@@ -28,11 +28,14 @@ class WorldBorder(models.Model):
 class TestProperty(models.Model):
     address = models.CharField(max_length=100) #address of property
     city = models.CharField(max_length=100) #city
+
     #change these to pointfield
     lon = models.FloatField()
     lat = models.FloatField()
     date_posted = models.DateTimeField(default=timezone.now) #date the listing was added to db
     rent = models.CharField(max_length=100) #rent price
+    beds = models.CharField(max_length=100, null=True)  # type of house (apartment, bungalow etc)
+    baths = models.CharField(max_length=100, null=True)  # type of house (apartment, bungalow etc)
     propertyType = models.CharField(max_length=100) #type of house (apartment, bungalow etc)
 
     def __str__(self):
