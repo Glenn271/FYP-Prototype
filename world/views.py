@@ -172,9 +172,6 @@ def find_latest_info(city):
     noProp = soup.find_all(class_="ZeroResults__Container-sc-193ko9u-2 UZhCx")
     print("noProp = " + str(noProp))
 
-    allProp = soup.find("h1", {"data-testid":"search-h1"}).get_text()
-    cleaned_city = city.replace("-", " ")
-
     # if no properties match search
     if noProp:
         return []
@@ -327,12 +324,13 @@ def search(request):
                         'lon': prop.lon,
                         'rent': prop.rent,
                         'rent_sim' : rent_sim,
-                        'beds': 0,
-                        'baths': 0,
+                        'beds': prop.beds,
+                        'baths': prop.baths,
                         'house': prop.propertyType,
                         'house_sim': house_sim,
                         'total_sim' : total_sim
                     }
+
                     prop_list.append(property)
 
                 # sort based on rent similarity
