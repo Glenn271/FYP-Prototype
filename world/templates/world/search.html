@@ -193,9 +193,11 @@
             let pos;
             map.setView([53.5, -8.5], 11);
             updateLocation(map);
+            /*
             map.on('touchstart click dblclick ', function () {
                 updateLocation(map);
             });
+             */
         }
         function updateLocation(map) {
             navigator.geolocation.getCurrentPosition(function (pos) {
