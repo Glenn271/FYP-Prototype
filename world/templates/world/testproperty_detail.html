@@ -15,6 +15,7 @@
             #map {width: 50vw;height: 50vh;}
         </style>
     {% endblock %}
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 
 </head>
 
@@ -30,6 +31,7 @@
             <h1>{% block title %} {{ prop.address }} {% endblock title %}</h1>
             <p class="card-text ">Posted on : {{ prop.date_posted }}</p>
             <p class="card-text ">Rent: {{ prop.rent }}</p>
+            <div id="pano"></div>
             <br>
             <h3>Nearby Amenities</h3>
               <form action = "{% url 'overpass' %}" method = "POST">
@@ -121,6 +123,26 @@
         return cookieValue;
     }
 
+    function initialize() {
+          const fenway = { lat: {{prop.lat}}, lng: {{prop.lon}} };
+
+          const panorama = new google.maps.StreetViewPanorama(
+            document.getElementById("pano"),
+            {
+              position: fenway,
+              pov: {
+                heading: 34,
+                pitch: 10,
+              },
+            }
+          );
+    }
+
 </script>
+
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAUX-ik3h6pXkgvKcT3T1r3L8uCTsD0do&callback=initialize&libraries=&v=weekly"
+  async
+></script>
 
 {% endblock content %}

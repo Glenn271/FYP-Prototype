@@ -96,8 +96,8 @@
                      house_sim = "{{ prop.house_sim }}"
                      date_posted = "{{ prop.date_posted }}">
 
-
                   <div class="card-body">
+                    <img class="card-img-top" src='{{ prop.image_url }}' alt="Property Image">
                     {% if prop == prop_list.0 %}
                         <i class="fas fa-star" style = "color:darkgoldenrod;"></i>
                         <p class="best-match">Best Match</p>
@@ -193,11 +193,6 @@
             let pos;
             map.setView([53.5, -8.5], 11);
             updateLocation(map);
-            /*
-            map.on('touchstart click dblclick ', function () {
-                updateLocation(map);
-            });
-             */
         }
         function updateLocation(map) {
             navigator.geolocation.getCurrentPosition(function (pos) {

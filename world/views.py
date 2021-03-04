@@ -179,44 +179,54 @@ def find_latest_info(city):
     #if properties are found
     else:
         propertyCard = soup.find_all(class_="SearchPage__Result-gg133s-2 itNYNv")
-        print(list(propertyCard))
 
         for prop in propertyCard:
-            propList = prop
-            propAddress = propList.find(class_="TitleBlock__Address-sc-1avkvav-7 knPImU").get_text()
-            rentPrice = propList.find(class_="TitleBlock__Price-sc-1avkvav-3 pJtsY").p.text
-
-            # property info
-            beds = propList.find("p", {"data-testid": "beds"}).get_text()
-            baths = propList.find("p", {"data-testid": "baths"}).get_text()
-            daftHouse = propList.find("p", {"data-testid": "property-type"}).get_text()
-
-
-            #using Nominatim for lat/lon info of property
-            url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(propAddress) + '?format=json'
-            response = requests.get(url).json()
-
             try:
-                lat = response[0]["lat"]
-                lon = response[0]["lon"]
+                propList = prop
+                propAddress = propList.find(class_="TitleBlock__Address-sc-1avkvav-7 knPImU").get_text()
+                rentPrice = propList.find(class_="TitleBlock__Price-sc-1avkvav-3 pJtsY").p.text
 
-            #find default coords of city if difficulties finding address
-            except:
-                url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(
-                    city) + '?format=json'
+                # property info
+                beds = propList.find("p", {"data-testid": "beds"}).get_text()
+                baths = propList.find("p", {"data-testid": "baths"}).get_text()
+                daftHouse = propList.find("p", {"data-testid": "property-type"}).get_text()
+
+
+                #using Nominatim for lat/lon info of property
+                url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(propAddress) + '?format=json'
                 response = requests.get(url).json()
-                lat = response[0]["lat"]
-                lon = response[0]["lon"]
 
-            print(propAddress)
-            print(lat + " " + lon)
+                try:
+                    image_url = propList.find(class_="Card__CardImage-x1sjdn-6 bpSCnQ").img['src']
 
-            listing = TestProperty(address=propAddress, city = city, lat=lat,
-                                   lon = lon, rent=rentPrice, beds = beds, baths = baths,
-                                   propertyType = daftHouse)
+                except:
+                    image_url = "/static/images/myhome.png"
 
-            listing.save()
-            search_props.append(listing)
+                print(image_url)
+
+                try:
+                    lat = response[0]["lat"]
+                    lon = response[0]["lon"]
+
+                #find default coords of city if difficulties finding address
+                except:
+                    url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(
+                        city) + '?format=json'
+                    response = requests.get(url).json()
+                    lat = response[0]["lat"]
+                    lon = response[0]["lon"]
+
+                print(propAddress)
+                print(lat + " " + lon)
+
+                listing = TestProperty(address=propAddress, city = city, lat=lat,
+                                       lon = lon, rent=rentPrice, beds = beds, baths = baths,
+                                       propertyType = daftHouse, image_url = image_url)
+
+                listing.save()
+                search_props.append(listing)
+            except:
+                print("Incompatible property")
 
     return search_props
 
