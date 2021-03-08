@@ -14,6 +14,7 @@
                 #map {width: 70vw;height: 70vh;}
             </style>
         {% endblock %}
+
     <!--LOADS markercluster css-->
         <link href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" type="text/css" rel="stylesheet">
         <link href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" type="text/css" rel="stylesheet">
@@ -76,12 +77,11 @@
             let pos;
             map.setView([53.5, -8.5], 11);
             updateLocation(map);
-
         }
+
         function updateLocation(map) {
             navigator.geolocation.getCurrentPosition(function (pos) {
                 setMapToCurrentLocation(map, pos);
-                update_db(pos);
                 },
                 function (err) {
                 },
@@ -208,49 +208,6 @@
 
         map.fitBounds(bounds_markers.getBounds());
     }
-        function update_db(pos) {
-            let locString = pos.coords.longitude + ", " + pos.coords.latitude;
-
-            $.ajax({
-                type: "POST",
-                url :  "{% url 'updatedb' %}",
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                data: {
-                    point: locString
-                }
-            }).done(function (data, status, xhr) {
-                console.log(data["message"])
-                var originalMsg = $(".toast-body").html();
-                //$(".toast-body").html(originalMsg + "<br/>Updated database<br/>" + data["message"]);
-
-            }).fail(function (xhr, status, error) {
-                console.log('hi' + error);
-                var originalMsg = $(".toast-body").html();
-                //$(".toast-body").html(originalMsg + "<br/>" + error);
-            }).always(function () {
-                console.log("find_loc_ed finished");
-                //$(".toast").toast('show');
-            });
-        }
-
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
     </script>
 {% endblock %}
 {% endblock content %}
