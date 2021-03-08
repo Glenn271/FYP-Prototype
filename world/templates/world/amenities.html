@@ -91,6 +91,7 @@
 
     function setMapToCurrentLocation(map, pos) {
         console.log("In setMapToCurrentLocation.");
+        var bounds_markers = L.featureGroup();
         var all_markers = L.markerClusterGroup();
         var dining_markers = L.markerClusterGroup();
         var education_markers = L.markerClusterGroup();
@@ -168,6 +169,7 @@
             }
 
             all_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+            bounds_markers.addLayer(L.marker(myLatLon));
 
         });
         map.addLayer(all_markers);
@@ -182,6 +184,7 @@
             "Entertainment" : entertainment_markers,
             "Other Amenities" : other_markers
         }
+
 
         L.control.layers(amenity_markers).addTo(map);
 
@@ -203,8 +206,8 @@
             icon:houseIcon
         }).addTo(map);
 
-        map.flyTo(myLatLon, 16);
 
+        map.fitBounds(bounds_markers.getBounds());
     }
         function update_db(pos) {
             let locString = pos.coords.longitude + ", " + pos.coords.latitude;

@@ -15,6 +15,12 @@
             </style>
         {% endblock %}
 
+    <!--LOADS markercluster css-->
+        <link href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" type="text/css" rel="stylesheet">
+        <link href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" type="text/css" rel="stylesheet">
+        <!--LOADS markercluster plugin-->
+        <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
+
     </head>
     <body>
         {% block body_content %}
@@ -97,7 +103,7 @@
                      date_posted = "{{ prop.date_posted }}">
 
                   <div class="card-body">
-                    <img class="card-img-top" src='{{ prop.image_url }}' alt="Property Image">
+{#                    <img class="card-img-top" src='{{ prop.image_url }}' alt="Property Image">#}
                     {% if prop == prop_list.0 %}
                         <i class="fas fa-star" style = "color:darkgoldenrod;"></i>
                         <p class="best-match">Best Match</p>
@@ -107,6 +113,7 @@
                             }
                         </style>
                     {% endif %}
+
                     <h5 class="card-title">{{ prop.address }}</h5>
                     <p class="card-text">{{ prop.rent }}</p>
                     <p class="card-text">Posted {{ prop.date_posted|date:"F d, Y" }}</p>
@@ -211,6 +218,10 @@
         //setting the locations of properties on the map
         function setMapToCurrentLocation(map, pos) {
             console.log("In setMapToCurrentLocation.");
+
+            var bounds_markers = L.featureGroup();
+            var all_markers = L.markerClusterGroup();
+
             {% if form.is_valid and not noProp %}
                 $('.card').each(function() {
                     var address = $(this).attr('address');
@@ -219,14 +230,19 @@
                     var lon = $(this).attr('lon');
 
                     let myLatLon = L.latLng(lat, lon);
-                    locationMarker = new L.Marker(myLatLon).addTo(map);
-                    locationMarker.bindPopup("<b>"+address+"</b><br>"+rent);
+                    all_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+address+"</b><br>"+rent));
+                    bounds_markers.addLayer(L.marker(myLatLon));
+
+                    {#locationMarker = new L.Marker(myLatLon).addTo(map);#}
+                    {#locationMarker.bindPopup("<b>"+address+"</b><br>"+rent);#}
                 });
 
+                map.addLayer(all_markers);
+                map.fitBounds(bounds_markers.getBounds());
 
-                let myLatLon = L.latLng('{{ prop_list.0.lat}}', '{{prop_list.0.lon}}');
-
-                map.flyTo(myLatLon, 16);
+                {#let myLatLon = L.latLng('{{ prop_list.0.lat}}', '{{prop_list.0.lon}}');#}
+                {##}
+                {#map.flyTo(myLatLon, 16);#}
             {% endif %}
         }
 
