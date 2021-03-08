@@ -15,7 +15,7 @@
             #map {width: 50vw;height: 50vh;}
         </style>
     {% endblock %}
-    <!--<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>-->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 
     <!-- Leaflet custom icons -->
     <script src = "{% static 'world/icons.js' %}"></script>
@@ -33,8 +33,15 @@
             <h1>{% block title %} {{ prop.address }} {% endblock title %}</h1>
             <p class="card-text ">Posted on : {{ prop.date_posted }}</p>
             <p class="card-text ">Rent: {{ prop.rent }}</p>
-            <div id="pano"></div>
+{#            <img src = "https://maps.googleapis.com/maps/api/streetview?location={{ prop.lat }},{{ prop.lon }}#}
+{#            &size=456x456&key=AIzaSyAAUX-ik3h6pXkgvKcT3T1r3L8uCTsD0do" alt = "None">#}
             <br>
+          </div>
+        </div>
+      </div>
+    <div class="row">
+        <div class="col-md-8 card mb-4  mt-3 left  top">
+          <div class="card-body">
             <h3>Nearby Amenities</h3>
               <form action = "{% url 'overpass' %}" method = "POST">
                   {% csrf_token %}
@@ -65,7 +72,6 @@
               </form>
           </div>
         </div>
-      </div>
     </div>
 </body>
 
@@ -119,22 +125,7 @@
         }
         return cookieValue;
     }
-/*
-    function initialize() {
-          const fenway = { lat: {{prop.lat}}, lng: {{prop.lon}} };
 
-          const panorama = new google.maps.StreetViewPanorama(
-            document.getElementById("pano"),
-            {
-              position: fenway,
-              pov: {
-                heading: 34,
-                pitch: 10,
-              },
-            }
-          );
-    }
-*/
 </script>
 
 <script
