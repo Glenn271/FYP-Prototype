@@ -95,45 +95,6 @@
     function setMapToCurrentLocation(map, pos) {
         console.log("In setMapToCurrentLocation.");
 
-       /*
-        var dinIcon = L.icon({
-            iconUrl: '/static/images/utensils.svg',
-            iconSize: [30, 30]
-        });
-
-        var edIcon = L.icon({
-            iconUrl: '/static/images/school.svg',
-            iconSize: [30, 30]
-        });
-
-        var entIcon = L.icon({
-            iconUrl: '/static/images/theater-masks.svg',
-            iconSize: [30, 30]
-        });
-
-        var finIcon = L.icon({
-            iconUrl: '/static/images/euro-sign.svg',
-            iconSize: [30, 30]
-        });
-
-        var medIcon = L.icon({
-            iconUrl: '/static/images/medkit.svg',
-            iconSize: [30, 30]
-        });
-
-        var transIcon = L.icon({
-            iconUrl: '/static/images/subway.svg',
-            iconSize: [30, 30]
-        });
-
-        var houseIcon = L.icon({
-            iconUrl: '/static/images/home.svg',
-            iconSize: [30, 30]
-        });
-
-        */
-
-
         var bounds_markers = L.featureGroup();
         var all_markers = L.markerClusterGroup();
         var dining_markers = L.markerClusterGroup();
@@ -219,13 +180,13 @@
 
         var amenity_markers = {
             "All" : all_markers,
-            "Food and Drink" : dining_markers,
-            "Education" : education_markers,
-            "Transport" : transportation_markers,
-            "Financial Services" : financial_markers,
-            "Healthcare" : healthcare_markers,
-            "Entertainment" : entertainment_markers,
-            "Other Amenities" : other_markers
+            "<i class=\"fas fa-utensils\"></i> Food and Drink" : dining_markers,
+            "<i class=\"fas fa-school\"></i> Education" : education_markers,
+            "<i class=\"fas fa-subway\"></i> Transport" : transportation_markers,
+            "<i class=\"fas fa-euro-sign\"></i> Financial Services" : financial_markers,
+            "<i class=\"fas fa-medkit\"></i> Healthcare" : healthcare_markers,
+            "<i class=\"fas fa-theater-masks\"></i> Entertainment" : entertainment_markers,
+            "<i class=\"fas fa-map-marker-alt\"></i> Other Amenities" : other_markers
         }
 
 
