@@ -197,14 +197,6 @@ def find_latest_info(city):
                 response = requests.get(url).json()
 
                 try:
-                    image_url = propList.find(class_="Card__CardImage-x1sjdn-6 bpSCnQ").img['src']
-
-                except:
-                    image_url = "/static/images/myhome.png"
-
-                print(image_url)
-
-                try:
                     lat = response[0]["lat"]
                     lon = response[0]["lon"]
 
@@ -221,7 +213,7 @@ def find_latest_info(city):
 
                 listing = TestProperty(address=propAddress, city = city, lat=lat,
                                        lon = lon, rent=rentPrice, beds = beds, baths = baths,
-                                       propertyType = daftHouse, image_url = image_url)
+                                       propertyType = daftHouse)
 
                 listing.save()
                 search_props.append(listing)
@@ -401,8 +393,12 @@ def get_amenities(radius, lat, lon):
         name = node.tags.get("name", "n/a")
         print(amenity, name, node.lat, node.lon)
 
+        amenity_display_name = amenity.replace("_", " ")
+        amenity_display_name = amenity_display_name.title()
+
         area_amenity = {
             'amenity' : amenity,
+            'amenity_display_name' : amenity_display_name,
             'name' : name,
             'lat' : node.lat,
             'lon' : node.lon
@@ -415,8 +411,13 @@ def get_amenities(radius, lat, lon):
         name = way.tags.get("name", "n/a")
         print(amenity, name, way.center_lat, way.center_lon)
 
+        amenity_display_name = amenity.replace("_", " ")
+        amenity_display_name = amenity_display_name.title()
+
+
         area_amenity = {
             'amenity': amenity,
+            'amenity_display_name': amenity_display_name,
             'name': name,
             'lat': node.lat,
             'lon': node.lon

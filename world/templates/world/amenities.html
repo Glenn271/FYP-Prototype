@@ -34,6 +34,7 @@
                 {% for amenity in amenity_list %}
                     <div class="card" style="width: 70vw; display:none;"
                          amenity = "{{ amenity.amenity }}"
+                         amenity_display_name = "{{ amenity.amenity_display_name }}"
                          name = "{{ amenity.name }}"
                          lat = "{{ amenity.lat }}"
                          lon = "{{ amenity.lon }}">
@@ -138,6 +139,7 @@
 
         $('.card').each(function() {
             var amenity = $(this).attr('amenity');
+            var amenity_display_name = $(this).attr('amenity_display_name');
             var name = $(this).attr('name');
             var lat = $(this).attr('lat');
             var lon = $(this).attr('lon');
@@ -145,34 +147,34 @@
             let myLatLon = L.latLng(lat, lon);
 
             if (dining.includes(amenity)){
-                dining_markers.addLayer(L.marker(myLatLon, {icon:dinIcon}).bindPopup("<b>"+amenity+"</b><br>"+name));
+                dining_markers.addLayer(L.marker(myLatLon, {icon:dinIcon}).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
             }
 
             else if (education.includes(amenity)){
-                education_markers.addLayer(L.marker(myLatLon, {icon:edIcon}).bindPopup("<b>"+amenity+"</b><br>"+name));
+                education_markers.addLayer(L.marker(myLatLon, {icon:edIcon}).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
             }
 
             else if (transportation.includes(amenity)){
-                transportation_markers.addLayer(L.marker(myLatLon, {icon:transIcon}).bindPopup("<b>"+amenity+"</b><br>"+name));
+                transportation_markers.addLayer(L.marker(myLatLon, {icon:transIcon}).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
             }
 
             else if (financial.includes(amenity)){
-                financial_markers.addLayer(L.marker(myLatLon, {icon:finIcon}).bindPopup("<b>"+amenity+"</b><br>"+name));
+                financial_markers.addLayer(L.marker(myLatLon, {icon:finIcon}).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
             }
 
             else if (healthcare.includes(amenity)){
-                healthcare_markers.addLayer(L.marker(myLatLon, {icon:medIcon}).bindPopup("<b>"+amenity+"</b><br>"+name));
+                healthcare_markers.addLayer(L.marker(myLatLon, {icon:medIcon}).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
             }
 
             else if (entertainment.includes(amenity)){
-                entertainment_markers.addLayer(L.marker(myLatLon, {icon:entIcon}).bindPopup("<b>"+amenity+"</b><br>"+name));
+                entertainment_markers.addLayer(L.marker(myLatLon, {icon:entIcon}).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
             }
 
             else{
-                other_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+                other_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
             }
 
-            all_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+            all_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
             bounds_markers.addLayer(L.marker(myLatLon));
 
         });
