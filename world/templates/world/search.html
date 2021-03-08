@@ -15,6 +15,9 @@
             </style>
         {% endblock %}
 
+    <!-- Leaflet custom icons -->
+    <script src = "{% static 'world/icons.js' %}"></script>
+
     <!--LOADS markercluster css-->
         <link href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" type="text/css" rel="stylesheet">
         <link href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" type="text/css" rel="stylesheet">
@@ -221,11 +224,6 @@
 
             var bounds_markers = L.featureGroup();
             var all_markers = L.markerClusterGroup();
-
-            var houseIcon = L.icon({
-            iconUrl: '/static/images/home.svg',
-            iconSize: [30, 30]
-            });
 
 
             {% if form.is_valid and not noProp %}

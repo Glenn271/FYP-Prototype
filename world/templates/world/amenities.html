@@ -19,6 +19,9 @@
         <link href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" type="text/css" rel="stylesheet">
         <!--LOADS markercluster plugin-->
         <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
+
+    <!-- Leaflet custom icons -->
+        <script src = "{% static 'world/icons.js' %}"></script>
     </head>
     <body>
         {% block body_content %}
@@ -91,6 +94,46 @@
 
     function setMapToCurrentLocation(map, pos) {
         console.log("In setMapToCurrentLocation.");
+
+       /*
+        var dinIcon = L.icon({
+            iconUrl: '/static/images/utensils.svg',
+            iconSize: [30, 30]
+        });
+
+        var edIcon = L.icon({
+            iconUrl: '/static/images/school.svg',
+            iconSize: [30, 30]
+        });
+
+        var entIcon = L.icon({
+            iconUrl: '/static/images/theater-masks.svg',
+            iconSize: [30, 30]
+        });
+
+        var finIcon = L.icon({
+            iconUrl: '/static/images/euro-sign.svg',
+            iconSize: [30, 30]
+        });
+
+        var medIcon = L.icon({
+            iconUrl: '/static/images/medkit.svg',
+            iconSize: [30, 30]
+        });
+
+        var transIcon = L.icon({
+            iconUrl: '/static/images/subway.svg',
+            iconSize: [30, 30]
+        });
+
+        var houseIcon = L.icon({
+            iconUrl: '/static/images/home.svg',
+            iconSize: [30, 30]
+        });
+
+        */
+
+
         var bounds_markers = L.featureGroup();
         var all_markers = L.markerClusterGroup();
         var dining_markers = L.markerClusterGroup();
@@ -141,27 +184,27 @@
             let myLatLon = L.latLng(lat, lon);
 
             if (dining.includes(amenity)){
-                dining_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+                dining_markers.addLayer(L.marker(myLatLon, {icon:dinIcon}).bindPopup("<b>"+amenity+"</b><br>"+name));
             }
 
             else if (education.includes(amenity)){
-                education_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+                education_markers.addLayer(L.marker(myLatLon, {icon:edIcon}).bindPopup("<b>"+amenity+"</b><br>"+name));
             }
 
             else if (transportation.includes(amenity)){
-                transportation_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+                transportation_markers.addLayer(L.marker(myLatLon, {icon:transIcon}).bindPopup("<b>"+amenity+"</b><br>"+name));
             }
 
             else if (financial.includes(amenity)){
-                financial_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+                financial_markers.addLayer(L.marker(myLatLon, {icon:finIcon}).bindPopup("<b>"+amenity+"</b><br>"+name));
             }
 
             else if (healthcare.includes(amenity)){
-                healthcare_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+                healthcare_markers.addLayer(L.marker(myLatLon, {icon:medIcon}).bindPopup("<b>"+amenity+"</b><br>"+name));
             }
 
             else if (entertainment.includes(amenity)){
-                entertainment_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity+"</b><br>"+name));
+                entertainment_markers.addLayer(L.marker(myLatLon, {icon:entIcon}).bindPopup("<b>"+amenity+"</b><br>"+name));
             }
 
             else{
@@ -196,19 +239,6 @@
             radius : {{ source.radius }}
         }).addTo(map);
 
-        /*
-        const houseIcon = L.divIcon({
-            html: '<i class="fas fa-home"></i>',
-            iconSize: [60, 60],
-            className: 'fa_icon'
-        });
-        */
-
-
-        var houseIcon = L.icon({
-            iconUrl: '/static/images/home.svg',
-            iconSize: [30, 30]
-        })
 
         L.marker(myLatLon, {
             icon:houseIcon

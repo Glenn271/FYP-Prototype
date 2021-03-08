@@ -15,8 +15,10 @@
             #map {width: 50vw;height: 50vh;}
         </style>
     {% endblock %}
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <!--<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>-->
 
+    <!-- Leaflet custom icons -->
+    <script src = "{% static 'world/icons.js' %}"></script>
 </head>
 
 <body>
@@ -78,11 +80,6 @@
         let pos;
         map.setView([53.5, -8.5], 11);
         updateLocation(map);
-        /*
-        map.on('touchstart click dblclick ', function () {
-            updateLocation(map);
-        });
-         */
     }
     function updateLocation(map) {
         navigator.geolocation.getCurrentPosition(function (pos) {
@@ -104,7 +101,7 @@
         if (locationMarker) {
             map.removeLayer(locationMarker);
         }
-        locationMarker = new L.Marker(myLatLon).addTo(map);
+        locationMarker = new L.Marker(myLatLon, {icon:houseIcon}).addTo(map);
     }
 
     function getCookie(name) {
