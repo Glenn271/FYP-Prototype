@@ -222,6 +222,12 @@
             var bounds_markers = L.featureGroup();
             var all_markers = L.markerClusterGroup();
 
+            var houseIcon = L.icon({
+            iconUrl: '/static/images/home.svg',
+            iconSize: [30, 30]
+            });
+
+
             {% if form.is_valid and not noProp %}
                 $('.card').each(function() {
                     var address = $(this).attr('address');
@@ -230,19 +236,14 @@
                     var lon = $(this).attr('lon');
 
                     let myLatLon = L.latLng(lat, lon);
-                    all_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+address+"</b><br>"+rent));
+                    all_markers.addLayer(L.marker(myLatLon,{icon:houseIcon}).bindPopup("<b>"+address+"</b><br>"+rent));
                     bounds_markers.addLayer(L.marker(myLatLon));
 
-                    {#locationMarker = new L.Marker(myLatLon).addTo(map);#}
-                    {#locationMarker.bindPopup("<b>"+address+"</b><br>"+rent);#}
                 });
 
                 map.addLayer(all_markers);
                 map.fitBounds(bounds_markers.getBounds());
 
-                {#let myLatLon = L.latLng('{{ prop_list.0.lat}}', '{{prop_list.0.lon}}');#}
-                {##}
-                {#map.flyTo(myLatLon, 16);#}
             {% endif %}
         }
 

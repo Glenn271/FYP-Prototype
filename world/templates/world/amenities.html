@@ -196,11 +196,19 @@
             radius : {{ source.radius }}
         }).addTo(map);
 
+        /*
         const houseIcon = L.divIcon({
             html: '<i class="fas fa-home"></i>',
-            iconSize: [20, 20],
+            iconSize: [60, 60],
             className: 'fa_icon'
         });
+        */
+
+
+        var houseIcon = L.icon({
+            iconUrl: '/static/images/home.svg',
+            iconSize: [30, 30]
+        })
 
         L.marker(myLatLon, {
             icon:houseIcon
