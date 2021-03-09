@@ -8,10 +8,10 @@
     <head>
         {% leaflet_js %}
         {% leaflet_css %}
-{#        {% block head_title %}{% trans %}{% endblock %}#}
+        {% block head_title %}{% endblock %}
         {% block extra_header %}
             <style>
-                #map {width: 70vw;height: 80vh;}
+                #map {width: 70vw;height: 60vh;}
             </style>
         {% endblock %}
 
@@ -21,9 +21,9 @@
         <div class = "container">
             <h1 class = "jumbotron-heading"> Welcome to RentCommend </h1>
             <p class="lead text-muted">
-                "Renting with you in mind. Our system will analyse properties on the
+                Renting with you in mind. Our system will analyse properties on the
                 market matching your ideal needs and generate a recommendation for your
-                perfect place."
+                perfect place.
             </p>
             <p>
                 <a href="{% url 'world-about' %}" class = "btn btn-primary my-2">About RentCommend</a>
@@ -31,9 +31,20 @@
             </p>
         </div>
     </section>
+
+    <br>
+
+    <div class = "container">
+        <div class = "page-header">
+            <p class = "text-center font-weight-bold"> You Are Currently Located Here </p>
+        </div>
+
         {% block body_content %}
             {% leaflet_map "map" callback="window.map_init_basic" %}
         {% endblock %}
+
+    </div>
+
     </body>
     {% block extra_footer %}
 

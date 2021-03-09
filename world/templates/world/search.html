@@ -8,7 +8,6 @@
     <head>
         {% leaflet_js %}
         {% leaflet_css %}
-        {% block head_title %}{% trans "Find a Property" %}{% endblock %}
         {% block extra_header %}
             <style>
                 #map {width: 70vw;height: 70vh;}
@@ -33,7 +32,11 @@
               No properties found in your chosen area. Please refine your search.
             </div>
         {% endif %}
+        <div class = "page-header">
+            <h1 class = "h3 text-center">Find a Property</h1>
+        </div>
 
+       </div>
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
@@ -55,6 +58,7 @@
                        value = "5000" step="50"/>
                 <label id="rentPrice"></label>
                 <br>
+
                 {#  priority sliders  #}
 
                 <br>
@@ -62,7 +66,7 @@
                 <label>Rent Cost Importance</label>
                 <br>
                 <label>Low</label>
-                <input id="rent_priority" name="rent_priority" type="range" min="0" max="1"
+                <input id="rent_priority" name="rent_priority" type="range" class="form-range" min="0" max="1"
                        value = "0.5" step="0.1"/>
                 <label>High</label>
                 <br>
