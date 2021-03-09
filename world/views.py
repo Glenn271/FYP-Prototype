@@ -191,9 +191,11 @@ def find_latest_info(city):
                 baths = propList.find("p", {"data-testid": "baths"}).get_text()
                 daftHouse = propList.find("p", {"data-testid": "property-type"}).get_text()
 
+                osm_address = propAddress + " Ireland"
+                osm_city = city + " Dublin Ireland"
 
                 #using Nominatim for lat/lon info of property
-                url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(propAddress) + '?format=json'
+                url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(osm_address) + '?format=json'
                 response = requests.get(url).json()
 
                 try:
@@ -203,7 +205,7 @@ def find_latest_info(city):
                 #find default coords of city if difficulties finding address
                 except:
                     url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(
-                        city) + '?format=json'
+                        osm_city) + '?format=json'
                     response = requests.get(url).json()
                     lat = response[0]["lat"]
                     lon = response[0]["lon"]
