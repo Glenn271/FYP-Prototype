@@ -125,7 +125,7 @@
                             <li class = "rent_rec">Rent</li>
                             <style>
                                 .rent_rec{
-                                    {% if prop.rent_sim >= 0.7  %}
+                                    {% if prop.rent_sim >= 0.6  %}
                                         color:green;
                                     {% elif prop.rent_sim < 0.7 and prop.rent_sim >= 0.4 %}
                                         color:orange;
@@ -244,6 +244,7 @@
             {% endif %}
         }
     </script>
+
 {% endblock %}
 {% endblock content %}
 

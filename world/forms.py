@@ -92,13 +92,13 @@ CITIES = [
 
 HOUSE_TYPE = [
     ('Any', 'Any'),
-    ('Apartment ', 'Apartment'),
-    ('Terraced House ', 'Terraced House'),
-    ('Semi-Detached ', 'Semi-Detached'),
-    ('Detached ', 'Detached'),
-    ('Bungalow ', 'Bungalow'),
-    ('Country House ', 'Country House'),
-    ('Studio ', 'Studio')
+    ('Apartment', 'Apartment'),
+    ('Terraced House', 'Terraced House'),
+    ('Semi-Detached', 'Semi-Detached'),
+    ('Detached', 'Detached'),
+    ('Bungalow', 'Bungalow'),
+    ('Country House', 'Country House'),
+    ('Studio', 'Studio')
 ]
 
 class PropertySearchForm(forms.Form):

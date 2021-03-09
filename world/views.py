@@ -241,6 +241,9 @@ def search(request):
             housePriority = request.POST['house_priority']
             houseType = form.cleaned_data['house_type']
 
+            if not houseType or 'Any' in houseType:
+                housePriority = 0
+
             print(city)
             print(rentPriority, housePriority, houseType)
 
@@ -326,6 +329,7 @@ def search(request):
                         'lon': prop.lon,
                         'rent': prop.rent,
                         'rent_sim' : rent_sim,
+                        'rent_eur' : actual_rent,
                         'beds': prop.beds,
                         'baths': prop.baths,
                         'house': prop.propertyType,
@@ -335,9 +339,10 @@ def search(request):
 
                     prop_list.append(property)
 
-                # sort based on rent similarity
-
-                prop_list.sort(key=lambda k: k['total_sim'], reverse=True)
+                if housePriority == 0:
+                    prop_list.sort(key=lambda k: k['rent_eur'], reverse=False)
+                else:
+                    prop_list.sort(key=lambda k: k['total_sim'], reverse=True)
 
                 #context
                 context['prop_list'] = prop_list
