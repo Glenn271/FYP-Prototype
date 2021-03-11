@@ -42,9 +42,10 @@
             <fieldset class="form-group">
                 {#  comes from forms.py #}
                 {{ form.city|as_crispy_field }}
-                <label>Type of House</label>
+                <br>
+                <label>Type of Property</label>
                 <button class = "btn dropdown-toggle btn-outline-secondary btn-sm"
-                        data-toggle = "dropdown">House Types<span class = "caret"></span></button>
+                        data-toggle = "dropdown">Property Types<span class = "caret"></span></button>
                 <ul class="dropdown-menu">
                     {{ form.house_type|as_crispy_field }}
                 </ul>
@@ -52,18 +53,40 @@
 
                 <br>
                 {#  rent price slider  #}
-                <label>Ideal Rent per month</label>
+                <label>Max Rent Limit per month</label>
                 <br>
                 <input id="rent" name="rent" type="range" min="0" max="10000"
                        value = "5000" step="50"/>
                 <label id="rentPrice"></label>
                 <br>
 
+                <br>
                 {#  priority sliders  #}
+                <label class = "font-weight-bold">Criteria Priorities</label>
+                <i class="fas fa-question-circle" data-toggle="collapse"
+                href="#infoCollapse"></i>
+                <div class = "collapse" id = "infoCollapse">
+                    <div class = "card card-body">
+                        Our system uses a multi-criteria evaluation algorithm to analyse
+                        your property search priorities and display results in an appropriate order.
+                        Your Best Match will be identified as the property that we feel matches your needs the closest!
+                    </div>
+                </div>
+                <br>
 
                 <br>
                 {#  rent priority slider  #}
-                <label>Rent Cost Importance</label>
+                <label>Rent Cost Priority</label>
+                <i class="fas fa-question-circle" data-toggle="collapse"
+                href="#rentCollapse"></i>
+                <div class = "collapse" id = "rentCollapse">
+                    <div class = "card card-body">
+                        This slider will allow you to prioritise the rental price of the property above or below
+                        other criteria. <br><br> Adjusting this slider towards <strong> Low </strong> will put rental cost as a lower concern in our
+                        evaluation process. <br><br> Moving towards <strong>High</strong> will enable our algorithm to mark the rental price as a
+                        primary concern while identifying your best match!
+                    </div>
+                </div>
                 <br>
                 <label>Low</label>
                 <input id="rent_priority" name="rent_priority" type="range" class="form-range" min="0" max="1"
@@ -73,7 +96,23 @@
 
                 <br>
                 {#  rent priority slider  #}
-                <label>House Type Importance</label>
+                <label>Property Type Priority</label>
+                <i class="fas fa-question-circle" data-toggle="collapse"
+                href="#houseCollapse"></i>
+                <div class = "collapse" id = "houseCollapse">
+                    <div class = "card card-body">
+                        This slider will allow you to prioritise the type of the property you are looking for above or below
+                        other criteria. <br><br> Adjusting this slider towards <b> Low </b> will put the property type as a lower concern in our
+                        evaluation process. This is a suitable option if you have high flexibility in choosing the type
+                        of property you would like.
+
+                        <br><br> Adjusting this slider towards <b>High</b> will allow our algorithm to display your search results
+                        with your desired property type(s) shown first. For example, selecting Apartment in Type of Property
+                        with this High setting will display all apartments higher in the search results
+                        before taking other search criteria into consideration.
+                    </div>
+                </div>
+
                 <br>
                 <label>Low</label>
                 <input id="house_priority" name="house_priority" type="range" min="0" max="1"
@@ -110,7 +149,6 @@
                      date_posted = "{{ prop.date_posted }}">
 
                   <div class="card-body">
-{#                    <img class="card-img-top" src='{{ prop.image_url }}' alt="Property Image">#}
                     {% if prop == prop_list.0 %}
                         <i class="fas fa-star" style = "color:darkgoldenrod;"></i>
                         <p class="best-match">Best Match</p>
@@ -131,7 +169,7 @@
                                 .rent_rec{
                                     {% if prop.rent_sim >= 0.6  %}
                                         color:green;
-                                    {% elif prop.rent_sim < 0.7 and prop.rent_sim >= 0.4 %}
+                                    {% elif prop.rent_sim < 0.6 and prop.rent_sim >= 0.4 %}
                                         color:orange;
                                     {% elif prop.rent_sim < 0.4 %}
                                         color:red;
