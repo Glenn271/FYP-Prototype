@@ -1,16 +1,75 @@
 {% extends "world/base.html" %}
+{% load leaflet_tags %}{% load static %}{% load i18n %}{% load crispy_forms_tags %}{% load crispy_forms_filters %}
+{% load pwa %}
+
 {% block content %}
 
     <body>
 
     <section class = "jumbotron text-center">
         <div class = "container">
-        <h1 class = "jumbotron-heading"> About RentCommend </h1>
+            <h1 class = "jumbotron-heading"> About RentCommend </h1>
             <p class="lead text-muted">
                 Learn about how we find the perfect property for you.
                 Take a look at how to use our search engine, view property information,
                 find local amenities and more.
             </p>
+            <div class="card">
+              <h5 class="card-header">Search Properties</h5>
+              <div class="card-body">
+                <h5 class="card-title">Find Your Ideal Property</h5>
+                <p class="card-text">Use our search engine to find the ideal property for
+                you. Enter your chosen area, the type of property/properties you would like,
+                and your maximum rent limit per month. In the Criteria Priority section, our
+                multi-criteria evaluation algorithm will filter your results based on your needs
+                and provide you with your Best Match.</p>
+                <a href="{% url 'world-search' %}" class="btn btn-primary">Find Properties</a>
+              </div>
+                <img class="card-img-bottom" src="{% static 'images/Search.png' %}" alt="Card image cap">
+            </div>
+            <br>
+
+            <div class="card">
+              <h5 class="card-header">Best Match</h5>
+              <div class="card-body">
+                <h5 class="card-title">Find Your Best Match</h5>
+                <p class="card-text">Based on your input on the Find Properties page, our algorithm will
+                    perform multi-criteria evaluation to analyse all properties in your chosen area. Your results will
+                    be displayed in order of how closely they meet your needs, with a Best Match displayed at the top.
+                </p>
+              </div>
+                <img class="card-img-bottom" src="{% static 'images/Best Match.png' %}" alt="Card image cap">
+            </div>
+            <br>
+
+            <div class="card">
+              <h5 class="card-header">Property Details</h5>
+              <div class="card-body">
+                <h5 class="card-title">View Property Information</h5>
+                <p class="card-text">
+                    You can view information for individual properties from your results. Detailed information including
+                    location on a map, property images, and a link for finding nearby amenities can be accessed.
+                </p>
+              </div>
+                <img class="card-img-bottom" src="{% static 'images/PropertyInfo.png' %}" alt="Card image cap">
+            </div>
+            <br>
+
+            <div class="card">
+              <h5 class="card-header">Amenities</h5>
+              <div class="card-body">
+                <h5 class="card-title">Finding Amenities</h5>
+                <p class="card-text">
+                    Using the Nearby Amenities section, you can view nearby amenities to a property in a given radius.
+                    From 500m to 10km, you can get an idea of locations related to entertainment, healthcare and
+                    education near the property you may consider enquiring about.
+                </p>
+              </div>
+                <img class="card-img-bottom" src="{% static 'images/Amenity Radius.png' %}" alt="Card image cap">
+                <img class="card-img-bottom" src="{% static 'images/Amenities.png' %}" alt="Card image cap">
+            </div>
+            <br>
+
         </div>
     </section>
 

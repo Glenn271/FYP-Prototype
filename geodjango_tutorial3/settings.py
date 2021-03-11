@@ -170,7 +170,7 @@ LEAFLET_CONFIG = {
     'OPACITY': 0.5,
 }
 
-LOGIN_REDIRECT_URL = '  '
+LOGIN_REDIRECT_URL = 'profile'
 
 PWA_APP_NAME = 'RentCommend'
 PWA_APP_DESCRIPTION = "Advanced Web Mapping application"
