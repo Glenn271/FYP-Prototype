@@ -136,7 +136,7 @@
             {% if form.is_valid and not noProp %}
             <h3> Available Properties </h3>
             {% for prop in prop_list %}
-                <div class="card" style="width: 70vw;"
+                <div class="card prop-card" style="width: 70vw;"
                      address = "{{ prop.address }}"
                      rent = "{{ prop.rent }}"
                      lat = "{{ prop.lat }}"
@@ -268,7 +268,7 @@
 
 
             {% if form.is_valid and not noProp %}
-                $('.card').each(function() {
+                $('.prop-card').each(function() {
                     var address = $(this).attr('address');
                     var rent = $(this).attr('rent');
                     var lat = $(this).attr('lat');
