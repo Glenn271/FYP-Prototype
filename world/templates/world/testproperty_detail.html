@@ -52,6 +52,14 @@
                              value = "{{ prop.lon }}" style= "display:none"/>
                       <br>
                       <label>Kilometer Radius from Property</label>
+                      <i class="fas fa-question-circle" data-toggle="collapse" href="#amenityCollapse"></i>
+                        <div class = "collapse" id = "amenityCollapse">
+                            <div class = "card card-body">
+                                This slider allows you to view all amenities within a specified radius of your
+                                property, from 500m to 10km. Explore facilities such as education, healthcare,
+                                entertainment and more!
+                            </div>
+                        </div>
                       <br>
                       <input id="radius" name="radius" type="range" min="0.5" max="10"
                            value = "5" step="0.5"/>
