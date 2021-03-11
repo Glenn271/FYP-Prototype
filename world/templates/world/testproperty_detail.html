@@ -19,6 +19,13 @@
 
     <!-- Leaflet custom icons -->
     <script src = "{% static 'world/icons.js' %}"></script>
+
+    <!--LOADS markercluster css-->
+        <link href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" type="text/css" rel="stylesheet">
+        <link href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" type="text/css" rel="stylesheet">
+        <!--LOADS markercluster plugin-->
+        <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
+
 </head>
 
 <body>
@@ -81,6 +88,7 @@
           </div>
         </div>
     </div>
+    </div>
 </body>
 
 <script>
@@ -117,6 +125,9 @@
         }
         locationMarker = new L.Marker(myLatLon, {icon:houseIcon}).addTo(map);
     }
+
+
+
 
     function getCookie(name) {
         var cookieValue = null;

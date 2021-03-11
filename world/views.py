@@ -358,6 +358,28 @@ def search(request):
     return render(request, 'world/search.html', {'form' : form})
 
 
+# def overpass_test(request):
+#     context = {}
+#
+#     radius = float(request.POST['radius'])
+#     radius *= 1000
+#     lat = request.POST['lat']
+#     lon = request.POST['lon']
+#
+#     print(radius,lat, lon)
+#
+#     amenity_list = get_amenities(radius, lat, lon)
+#
+#     source = {
+#         'lat' : lat,
+#         'lon' : lon,
+#         'radius' : radius
+#     }
+#
+#     context['amenity_list'] = amenity_list
+#     context['source'] = source
+#     return render(request, 'world/amenities.html', context)
+
 def overpass_test(request):
     context = {}
 
@@ -379,7 +401,6 @@ def overpass_test(request):
     context['amenity_list'] = amenity_list
     context['source'] = source
     return render(request, 'world/amenities.html', context)
-
 
 def get_amenities(radius, lat, lon):
     amenity_list = []

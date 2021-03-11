@@ -23,6 +23,7 @@
 
     <!-- Leaflet custom icons -->
         <script src = "{% static 'world/icons.js' %}"></script>
+
     </head>
     <body>
         {% block body_content %}
@@ -32,7 +33,7 @@
             <br>
             <div id = "info">
                 {% for amenity in amenity_list %}
-                    <div class="card" style="width: 70vw; display:none;"
+                    <div class="card amenity-card" style="width: 70vw; display:none;"
                          amenity = "{{ amenity.amenity }}"
                          amenity_display_name = "{{ amenity.amenity_display_name }}"
                          name = "{{ amenity.name }}"
@@ -40,6 +41,46 @@
                          lon = "{{ amenity.lon }}">
                     </div>
                 {% endfor %}
+            </div>
+            <div class="col-md-8 card mb-4  mt-3 left  top">
+              <div class="card-body">
+                <h3>Nearby Amenities</h3>
+                  <form action = "{% url 'overpass' %}" method = "POST">
+                      {% csrf_token %}
+                      <fieldset>
+                          <input type = "text" id = "lat" name = "lat"
+                                 value = "{{ source.lat }}" style= "display:none"/>
+                          <input type = "text" id = "lon" name = "lon"
+                                 value = "{{ source.lon }}" style= "display:none"/>
+                          <br>
+                          <label>Kilometer Radius from Property</label>
+                          <i class="fas fa-question-circle" data-toggle="collapse" href="#amenityCollapse"></i>
+                            <div class = "collapse" id = "amenityCollapse">
+                                <div class = "card card-body">
+                                    This slider allows you to view all amenities within a specified radius of your
+                                    property, from 500m to 10km. Explore facilities such as education, healthcare,
+                                    entertainment and more!
+                                </div>
+                            </div>
+                          <br>
+                          <input id="radius" name="radius" type="range" min="0.5" max="10"
+                               value = "5" step="0.5"/>
+                        <label id="radiusLabel"></label>
+                        <script>
+                            var km = "km"
+                            var radius_slider = document.getElementById("radius");
+                            var radius_label = document.getElementById("radiusLabel");
+                            radius_label.innerHTML = radius_slider.value.concat(km);
+
+                            radius_slider.oninput = function(){
+                                radius_label.innerHTML = radius_slider.value.concat(km);
+                            }
+                        </script>
+                          <br>
+                          <input type="submit" value="Amenities">
+                      </fieldset>
+                  </form>
+              </div>
             </div>
         {% endblock %}
     </body>
@@ -137,7 +178,7 @@
         'vending_machine', 'waste_basket', 'waste_disposal', 'water_point'
         ]
 
-        $('.card').each(function() {
+        $('.amenity-card').each(function() {
             var amenity = $(this).attr('amenity');
             var amenity_display_name = $(this).attr('amenity_display_name');
             var name = $(this).attr('name');
@@ -207,10 +248,10 @@
             icon:houseIcon
         }).addTo(map);
 
-
         map.fitBounds(bounds_markers.getBounds());
     }
     </script>
+
 {% endblock %}
 {% endblock content %}
 
