@@ -1,0 +1,155 @@
+{% extends "world/base.html" %}
+
+{% block content %}
+{% load leaflet_tags %}
+{% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+<head>
+    {% leaflet_js %}
+    {% leaflet_css %}
+    {% block head_title %}{% trans "Property Info" %}{% endblock %}
+    {% block extra_header %}
+        <style>
+            #map {width: 50vw;height: 50vh;}
+        </style>
+    {% endblock %}
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+    <!-- Leaflet custom icons -->
+    <script src = "{% static 'world/icons.js' %}"></script>
+
+    <!--LOADS markercluster css-->
+        <link href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" type="text/css" rel="stylesheet">
+        <link href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" type="text/css" rel="stylesheet">
+        <!--LOADS markercluster plugin-->
+        <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
+
+</head>
+
+<body>
+    {% block body_content %}
+        {% leaflet_map "map" callback="window.map_init_basic" %}
+    {% endblock %}
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 card mb-4  mt-3 left  top">
+          <div class="card-body">
+            <h1>{% block title %} {{ prop.address }} {% endblock title %}</h1>
+            <p class="card-text ">Posted on : {{ prop.date_posted }}</p>
+            <p class="card-text ">Rent: {{ prop.rent }}</p>
+            <img src = "https://maps.googleapis.com/maps/api/streetview?location={{ prop.lat }},{{ prop.lon }}
+            &size=456x456&key=AIzaSyAAUX-ik3h6pXkgvKcT3T1r3L8uCTsD0do" alt = "None">
+            <br>
+          </div>
+        </div>
+      </div>
+    <div class="row">
+        <div class="col-md-8 card mb-4  mt-3 left  top">
+          <div class="card-body">
+            <h3>Nearby Amenities</h3>
+              <form action = "{% url 'overpass' %}" method = "POST">
+                  {% csrf_token %}
+                  <fieldset>
+                      <input type = "text" id = "lat" name = "lat"
+                             value = "{{ prop.lat }}" style= "display:none"/>
+                      <input type = "text" id = "lon" name = "lon"
+                             value = "{{ prop.lon }}" style= "display:none"/>
+                      <br>
+                      <label>Kilometer Radius from Property</label>
+                      <i class="fas fa-question-circle" data-toggle="collapse" href="#amenityCollapse"></i>
+                        <div class = "collapse" id = "amenityCollapse">
+                            <div class = "card card-body">
+                                This slider allows you to view all amenities within a specified radius of your
+                                property, from 500m to 10km. Explore facilities such as education, healthcare,
+                                entertainment and more!
+                            </div>
+                        </div>
+                      <br>
+                      <input id="radius" name="radius" type="range" min="0.5" max="10"
+                           value = "5" step="0.5"/>
+                    <label id="radiusLabel"></label>
+                    <script>
+                        var km = "km"
+                        var radius_slider = document.getElementById("radius");
+                        var radius_label = document.getElementById("radiusLabel");
+                        radius_label.innerHTML = radius_slider.value.concat(km);
+
+                        radius_slider.oninput = function(){
+                            radius_label.innerHTML = radius_slider.value.concat(km);
+                        }
+                    </script>
+                      <br>
+                      <input type="submit" value="Amenities">
+                  </fieldset>
+              </form>
+          </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+<script>
+    let HOST = location.protocol + "//" + location.host;
+    let locationMarker;
+    let circle;
+    $("#map").css({
+        "width": "100%",
+        "height": $(document).height() - ($(".site-header").height() + $("#footer").height() + 45)});
+    function map_init_basic(map, options) {
+        let pos;
+        map.setView([53.5, -8.5], 11);
+        updateLocation(map);
+    }
+    function updateLocation(map) {
+        navigator.geolocation.getCurrentPosition(function (pos) {
+            setMapToCurrentLocation(map, pos);
+            },
+            function (err) {
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 30000
+            }
+        );
+    }
+
+    function setMapToCurrentLocation(map, pos) {
+        console.log("In setMapToCurrentLocation.");
+        let myLatLon = L.latLng({{ prop.lat }}, {{ prop.lon }});
+        map.flyTo(myLatLon, 16);
+        if (locationMarker) {
+            map.removeLayer(locationMarker);
+        }
+        locationMarker = new L.Marker(myLatLon, {icon:houseIcon}).addTo(map);
+    }
+
+
+
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+</script>
+
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAUX-ik3h6pXkgvKcT3T1r3L8uCTsD0do&callback=initialize&libraries=&v=weekly"
+  async
+></script>
+
+{% endblock content %}

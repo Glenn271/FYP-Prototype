@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic import DetailView
 from .forms import PropertySearchForm
-from .models import TestProperty
+from .models import TestProperty, Housing
 import requests
 from datetime import datetime
 from django.utils import timezone
@@ -19,10 +19,13 @@ def about(request):
     return render(request, 'world/about.html', {'title': 'About'})
 
 
-class PropDetailView(DetailView):
-    model = TestProperty
-    context_object_name = 'prop'
+# class PropDetailView(DetailView):
+#     model = TestProperty
+#     context_object_name = 'prop'
 
+class PropDetailView(DetailView):
+    model = Housing
+    context_object_name = 'prop'
 
 # #property search form
 # def search(request):
@@ -213,9 +216,15 @@ def find_latest_info(city):
                 print(propAddress)
                 print(lat + " " + lon)
 
-                listing = TestProperty(address=propAddress, city = city, lat=lat,
+                # listing = TestProperty(address=propAddress, city = city, lat=lat,
+                #                        lon = lon, rent=rentPrice, beds = beds, baths = baths,
+                #                        propertyType = daftHouse)
+
+                listing = Housing(address=propAddress, city = city, lat=lat,
                                        lon = lon, rent=rentPrice, beds = beds, baths = baths,
                                        propertyType = daftHouse)
+
+
 
                 listing.save()
                 search_props.append(listing)
@@ -263,7 +272,8 @@ def search(request):
             rent_weight = balanced[0]
             house_weight = balanced[1]
 
-            search_props = TestProperty.objects.filter(city=city)
+            # search_props = TestProperty.objects.filter(city=city)
+            search_props = Housing.objects.filter(city=city)
 
             if not search_props:
                 search_props = find_latest_info(city)
