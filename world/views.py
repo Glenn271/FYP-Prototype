@@ -227,28 +227,6 @@ def search(request):
     return render(request, 'world/search.html', {'form' : form})
 
 
-# def overpass_test(request):
-#     context = {}
-#
-#     radius = float(request.POST['radius'])
-#     radius *= 1000
-#     lat = request.POST['lat']
-#     lon = request.POST['lon']
-#
-#     print(radius,lat, lon)
-#
-#     amenity_list = get_amenities(radius, lat, lon)
-#
-#     source = {
-#         'lat' : lat,
-#         'lon' : lon,
-#         'radius' : radius
-#     }
-#
-#     context['amenity_list'] = amenity_list
-#     context['source'] = source
-#     return render(request, 'world/amenities.html', context)
-
 def overpass_test(request):
     context = {}
 
@@ -281,6 +259,8 @@ def get_amenities(radius, lat, lon):
                 (
                   node["amenity"](around:{0},{1}, {2});
                   way["amenity"](around:{0},{1}, {2});
+                  node["shop"](around:{0},{1}, {2});
+                  way["shop"](around:{0},{1}, {2});
                 );
                 out center;
                 >;
@@ -289,14 +269,26 @@ def get_amenities(radius, lat, lon):
 
     for node in result.nodes:
         amenity = node.tags.get("amenity", "n/a")
+        shop = node.tags.get("shop", "n/a")
         name = node.tags.get("name", "n/a")
-        # print(amenity, name, node.lat, node.lon)
 
-        amenity_display_name = amenity.replace("_", " ")
-        amenity_display_name = amenity_display_name.title()
+
+        amenity_or_shop = " "
+
+        if amenity == "n/a" and shop != "n/a":
+            amenity_or_shop = shop
+            amenity_display_name = shop.replace("_", " ")
+            amenity_display_name = amenity_display_name.title()
+
+        else:
+            amenity_or_shop = amenity
+            amenity_display_name = amenity.replace("_", " ")
+            amenity_display_name = amenity_display_name.title()
+
+        print(amenity_or_shop, name, node.lat, node.lon)
 
         area_amenity = {
-            'amenity' : amenity,
+            'amenity' : amenity_or_shop,
             'amenity_display_name' : amenity_display_name,
             'name' : name,
             'lat' : node.lat,
@@ -307,15 +299,25 @@ def get_amenities(radius, lat, lon):
 
     for way in result.ways:
         amenity = way.tags.get("amenity", "n/a")
+        shop = way.tags.get("shop", "n/a")
         name = way.tags.get("name", "n/a")
-        # print(amenity, name, way.center_lat, way.center_lon)
 
-        amenity_display_name = amenity.replace("_", " ")
-        amenity_display_name = amenity_display_name.title()
+        amenity_or_shop = " "
 
+        if amenity == "n/a" and shop != "n/a":
+            amenity_or_shop = shop
+            amenity_display_name = shop.replace("_", " ")
+            amenity_display_name = amenity_display_name.title()
+
+        else:
+            amenity_or_shop = amenity
+            amenity_display_name = amenity.replace("_", " ")
+            amenity_display_name = amenity_display_name.title()
+
+        print(amenity_or_shop, name, node.lat, node.lon)
 
         area_amenity = {
-            'amenity': amenity,
+            'amenity': amenity_or_shop,
             'amenity_display_name': amenity_display_name,
             'name': name,
             'lat': node.lat,
@@ -324,51 +326,49 @@ def get_amenities(radius, lat, lon):
 
         amenity_list.append(area_amenity)
 
-    # get shops
-    shop_query = ("""
-                    (
-                      node["shop"](around:{0},{1}, {2});
-                      way["shop"](around:{0},{1}, {2});
-                    );
-                    out center;
-                    >;
-                """).format(radius, lat, lon)
-    shop_result = api.query(shop_query)
-
-    for node in shop_result.nodes:
-        amenity = node.tags.get("shop", "n/a")
-        name = node.tags.get("name", "n/a")
-        # print(amenity, name, node.lat, node.lon)
-
-        shop_display_name = amenity.replace("_", " ")
-        amenity_display_name = amenity_display_name.title()
-
-        area_amenity = {
-            'amenity': amenity,
-            'amenity_display_name': amenity_display_name,
-            'name': name,
-            'lat': node.lat,
-            'lon': node.lon
-        }
-
-        amenity_list.append(area_amenity)
-
-    for way in shop_result.ways:
-        amenity = way.tags.get("shop", "n/a")
-        name = way.tags.get("name", "n/a")
-        # print(amenity, name, way.center_lat, way.center_lon)
-
-        amenity_display_name = amenity.replace("_", " ")
-        amenity_display_name = amenity_display_name.title()
-
-        area_amenity = {
-            'amenity': amenity,
-            'amenity_display_name': amenity_display_name,
-            'name': name,
-            'lat': node.lat,
-            'lon': node.lon
-        }
-
-        amenity_list.append(area_amenity)
+    # # get shops
+    # shop_query = ("""
+    #                 (
+    #                   node["shop"](around:{0},{1}, {2});
+    #                   way["shop"](around:{0},{1}, {2});
+    #                 );
+    #                 out center;
+    #                 >;
+    #             """).format(radius, lat, lon)
+    # shop_result = api.query(shop_query)
+    #
+    # for node in shop_result.nodes:
+    #     amenity = node.tags.get("shop", "n/a")
+    #     name = node.tags.get("name", "n/a")
+    #
+    #     amenity_display_name = amenity.replace("_", " ")
+    #     amenity_display_name = amenity_display_name.title()
+    #
+    #     area_amenity = {
+    #         'amenity': amenity,
+    #         'amenity_display_name': amenity_display_name,
+    #         'name': name,
+    #         'lat': node.lat,
+    #         'lon': node.lon
+    #     }
+    #
+    #     amenity_list.append(area_amenity)
+    #
+    # for way in shop_result.ways:
+    #     shop_amenity = way.tags.get("shop", "n/a")
+    #     shop_name = way.tags.get("name", "n/a")
+    #
+    #     amenity_display_name = amenity.replace("_", " ")
+    #     amenity_display_name = amenity_display_name.title()
+    #
+    #     area_amenity = {
+    #         'amenity': amenity,
+    #         'amenity_display_name': amenity_display_name,
+    #         'name': name,
+    #         'lat': node.lat,
+    #         'lon': node.lon
+    #     }
+    #
+    #     amenity_list.append(area_amenity)
 
     return amenity_list
