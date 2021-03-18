@@ -17,3 +17,5 @@
     var transIcon = new leafIcon({iconUrl:'/static/images/subway.svg'})
 
     var houseIcon = new leafIcon({iconUrl:'/static/images/home.svg'})
+
+    var shopIcon = new leafIcon({iconUrl:'/static/images/shopping-cart.svg'})

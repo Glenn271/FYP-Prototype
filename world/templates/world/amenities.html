@@ -63,9 +63,10 @@
                                 </div>
                             </div>
                           <br>
-                          <input id="radius" name="radius" type="range" min="0.5" max="10"
+                          <input class = "slider" id="radius" name="radius" type="range" min="0.5" max="10"
                                value = "5" step="0.5"/>
                         <label id="radiusLabel"></label>
+
                         <script>
                             var km = "km"
                             var radius_slider = document.getElementById("radius");
@@ -77,7 +78,7 @@
                             }
                         </script>
                           <br>
-                          <input type="submit" value="Amenities">
+                          <button class="btn btn-outline-info" type="submit">Amenities</button>
                       </fieldset>
                   </form>
               </div>
@@ -87,26 +88,7 @@
 
     {% block extra_footer %}
 
-        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
-            <div class="toast-header">
-                <strong class="mr-auto">Location Information</strong>
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="toast-body"></div>
-        </div>
 
-        <script>
-            $("#body_div").css({"top": $(".site-header").height() + 10, "position": "absolute"});
-                $(".toast").css({
-                    "top": ($(document).height() / 5),
-                    "left": ($(document).width() / 5),
-                    "position": "fixed",
-                    "z-index": 2000
-                });
-
-        </script>
 
     <script>
         let HOST = location.protocol + "//" + location.host;
@@ -145,7 +127,9 @@
         var financial_markers = L.markerClusterGroup();
         var healthcare_markers = L.markerClusterGroup();
         var entertainment_markers = L.markerClusterGroup();
+        var shop_markers = L.markerClusterGroup();
         var other_markers = L.markerClusterGroup();
+
 
         var dining = ['bar', 'bbq', 'biergarten', 'cafe', 'drinking_water', 'fast_food',
         'ice_cream', 'pub', 'restaurant']
@@ -166,6 +150,15 @@
         var entertainment = ['arts_centre', 'casino', 'cinema', 'community_centre',
         'gambling', 'nightclub', 'planetarium', 'public_bookcase', 'social_centre',
         'studio', 'theatre']
+
+        var shops = ['bakery', 'beverages', 'brewing_supplies', 'butcher', 'convenience', 'deli', 'frozen_food',
+        'department_store', 'general', 'kiosk', 'mall', 'supermarket', 'wholesale',
+        'jewelry', 'variety_store', 'chemist',
+        'cosmetics', 'medical_supply', 'optician',
+        'garden_centre' ,'garden_furniture', 'hardware'	,'houseware',
+        'computer', 'electronics', 'mobile_phone', 'bicycle','car','car_repair','car_parts','caravan','fuel',
+        'sports', 'video_games', 'books', 'gift', 'newsagent', 'dry_cleaning', 'laundry'
+	    ]
 
         var others = ['animal_boarding', 'animal_breeding', 'animal_shelter', 'baking_oven',
         'bench', 'childcare', 'clock', 'conference_centre', 'courthouse', 'crematorium',
@@ -211,6 +204,10 @@
                 entertainment_markers.addLayer(L.marker(myLatLon, {icon:entIcon}).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
             }
 
+            else if (shops.includes(amenity)){
+                shop_markers.addLayer(L.marker(myLatLon, {icon:shopIcon}).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
+            }
+
             else{
                 other_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
             }
@@ -229,9 +226,9 @@
             "<i class=\"fas fa-euro-sign\"></i> Financial Services" : financial_markers,
             "<i class=\"fas fa-medkit\"></i> Healthcare" : healthcare_markers,
             "<i class=\"fas fa-theater-masks\"></i> Entertainment" : entertainment_markers,
+            "<i class=\"fas fa-shopping-cart\"></i> Shops" : shop_markers,
             "<i class=\"fas fa-map-marker-alt\"></i> Other Amenities" : other_markers
         }
-
 
         L.control.layers(amenity_markers).addTo(map);
 

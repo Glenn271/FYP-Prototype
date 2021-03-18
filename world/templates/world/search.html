@@ -23,15 +23,23 @@
         <!--LOADS markercluster plugin-->
         <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
 
+
     </head>
     <body>
         {% block body_content %}
             <!-- Form for properties -->
-        {% if noProp %}
-            <div class="alert alert-danger" role="alert">
-              No properties found in your chosen area. Please refine your search.
-            </div>
+        {% if request.method == 'POST' %}
+            {% if noProp %}
+                <div class="alert alert-danger" role="alert">
+                  No properties found in your chosen area. Please refine your search.
+                </div>
+            {% else %}
+                <div class="alert alert-success" role="alert">
+                  Successfully found some ideal properties for you! See your results on the map below.
+                </div>
+            {% endif %}
         {% endif %}
+
         <div class = "page-header">
             <h1 class = "h3 text-center">Find a Property</h1>
         </div>
@@ -55,7 +63,7 @@
                 {#  rent price slider  #}
                 <label>Max Rent Limit per month</label>
                 <br>
-                <input id="rent" name="rent" type="range" min="0" max="10000"
+                <input class = "slider" id= "rent" name="rent" type="range" min="200" max="10000"
                        value = "5000" step="50"/>
                 <label id="rentPrice"></label>
                 <br>
@@ -89,7 +97,7 @@
                 </div>
                 <br>
                 <label>Low</label>
-                <input id="rent_priority" name="rent_priority" type="range" class="form-range" min="0" max="1"
+                <input class = "slider" id="rent_priority" name="rent_priority" type="range" class="form-range" min="0" max="1"
                        value = "0.5" step="0.1"/>
                 <label>High</label>
                 <br>
@@ -115,7 +123,7 @@
 
                 <br>
                 <label>Low</label>
-                <input id="house_priority" name="house_priority" type="range" min="0" max="1"
+                <input class = "slider" id="house_priority" name="house_priority" type="range" min="0" max="1"
                        value = "0.5" step="0.1"/>
                 <label>High</label>
                 <br>
