@@ -272,7 +272,6 @@ def get_amenities(radius, lat, lon):
         shop = node.tags.get("shop", "n/a")
         name = node.tags.get("name", "n/a")
 
-
         amenity_or_shop = " "
 
         if amenity == "n/a" and shop != "n/a":

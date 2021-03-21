@@ -1,5 +1,6 @@
 from django import forms
 
+
 CITIES = [
     ('Adamstown', 'Adamstown'),
     ('arbour-hill', 'Arbour Hill'),
