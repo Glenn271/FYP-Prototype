@@ -45,6 +45,7 @@ class TestProperty(models.Model):
     def get_absolute_url(self):
         return reverse('prop-detail', kwargs={'pk':self.pk})
 
+
 #storing property information
 class Housing(models.Model):
     address = models.CharField(max_length=100) #address of property
@@ -65,8 +66,9 @@ class Housing(models.Model):
     def get_absolute_url(self):
         return reverse('prop-detail', kwargs={'pk':self.pk})
 
+
 class UserFaves(models.Model):
-    user = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     house = models.ForeignKey(Housing, on_delete=models.CASCADE)
 
     def __str__(self):
