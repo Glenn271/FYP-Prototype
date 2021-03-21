@@ -36,6 +36,7 @@
         {% endfor %}
     {% else %}
         <li> No favourites yet. </li>
+        <a href="{% url 'world-search' %}" class = "btn btn-primary my-2">Find a Property</a>
     {% endif %}
 
 {% endblock content %}

@@ -39,6 +39,7 @@ def addfave(request, pk):
     context['user_faves'] = UserFaves.objects.filter(user = p)
     return render(request, 'users/profile.html', context)
 
+
 def removefave(request, pk):
     context = {}
     u = User.objects.get(username=request.user.username)
