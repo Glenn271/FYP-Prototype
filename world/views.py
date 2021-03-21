@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views.generic import DetailView, ListView
 from .forms import PropertySearchForm
-from .models import Housing, UserFaves
+from .models import Housing, UserFaves, Profile
+from django.contrib.auth.models import User
 import requests
 from datetime import datetime
 from django.utils import timezone
@@ -27,10 +28,18 @@ class PropDetailView(DetailView):
 class FavouriteListView(ListView):
     model = UserFaves
 
+    #potentially get queryset to query by username
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
-            print(self.request.user.username)
+            username = self.request.user.username
+            print(username)
+            u = User.objects.get(username = username)
+            p = Profile.objects.get(user=u)
+            uf = UserFaves.objects.filter(user = p)
+        else:
+            uf = []
+        context['favourites'] = uf
         return context
 
 
