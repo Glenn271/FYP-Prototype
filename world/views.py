@@ -42,6 +42,19 @@ class FavouriteListView(ListView):
         context['favourites'] = uf
         return context
 
+def addfave(request, pk):
+    u = User.objects.get(username=request.user.username)
+    p = Profile.objects.get(user=u)
+    h = Housing.objects.get(id=pk)
+    uf = UserFaves(user=p, house=h)
+    uf.save()
+    return render(request, 'world/home.html')
+
+
+
+
+
+
 
 def find_latest_info(city):
     search_props = []
