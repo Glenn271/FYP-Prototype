@@ -1,6 +1,7 @@
 from django.contrib.gis.db import models
 from django.utils import timezone
 from django.urls import reverse
+from users.models import Profile
 
 class WorldBorder(models.Model):
     # Regular Django fields corresponding to the attributes in the
@@ -63,3 +64,10 @@ class Housing(models.Model):
 
     def get_absolute_url(self):
         return reverse('prop-detail', kwargs={'pk':self.pk})
+
+class UserFaves(models.Model):
+    user = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    house = models.ForeignKey(Housing, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.house.address
