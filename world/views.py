@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 from .forms import PropertySearchForm
-from .models import TestProperty, Housing
+from .models import Housing, UserFaves
 import requests
 from datetime import datetime
 from django.utils import timezone
@@ -23,6 +23,15 @@ def about(request):
 class PropDetailView(DetailView):
     model = Housing
     context_object_name = 'prop'
+
+class FavouriteListView(ListView):
+    model = UserFaves
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
 
 
 def find_latest_info(city):

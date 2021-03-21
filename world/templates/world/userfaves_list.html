@@ -1,0 +1,8 @@
+<h1>Articles</h1>
+<ul>
+{% for favourite in object_list %}
+    <li>{{ favourite.house.address }}</li>
+{% empty %}
+    <li>No articles yet.</li>
+{% endfor %}
+</ul>
