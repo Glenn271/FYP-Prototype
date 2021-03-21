@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views, functions
-from .views import PropDetailView, FavouriteListView
+from .views import PropDetailView
 
 urlpatterns = [
     path('', views.home, name='world-home'),
@@ -8,6 +8,6 @@ urlpatterns = [
     path('search/', views.search, name='world-search'),
     path('overpass/', views.overpass_test, name='overpass'),
     path('results/<int:pk>/', PropDetailView.as_view(), name='prop-detail'),
-    path('favourite/<int:pk>/', views.addfave, name='add-fave'),
-    path('favourites/', FavouriteListView.as_view(), name='favourites-list')
+    path('addfavourite/<int:pk>/', views.addfave, name='add-fave'),
+    path('removefavourite/<int:pk>/', views.removefave, name='remove-fave'),
 ]

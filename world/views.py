@@ -25,30 +25,27 @@ class PropDetailView(DetailView):
     model = Housing
     context_object_name = 'prop'
 
-class FavouriteListView(ListView):
-    model = UserFaves
-
-    #potentially get queryset to query by username
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.user.is_authenticated:
-            username = self.request.user.username
-            print(username)
-            u = User.objects.get(username = username)
-            p = Profile.objects.get(user=u)
-            uf = UserFaves.objects.filter(user = p)
-        else:
-            uf = []
-        context['favourites'] = uf
-        return context
 
 def addfave(request, pk):
     context = {}
     u = User.objects.get(username=request.user.username)
     p = Profile.objects.get(user=u)
     h = Housing.objects.get(id=pk)
-    uf = UserFaves(user=p, house=h)
-    uf.save()
+
+    if not UserFaves.objects.filter(user=p, house=h).exists():
+        uf = UserFaves(user=p, house=h)
+        uf.save()
+
+    context['user_faves'] = UserFaves.objects.filter(user = p)
+    return render(request, 'users/profile.html', context)
+
+def removefave(request, pk):
+    context = {}
+    u = User.objects.get(username=request.user.username)
+    p = Profile.objects.get(user=u)
+    h = Housing.objects.get(id=pk)
+    uf = UserFaves.objects.filter(user=p, house=h)
+    uf.delete()
 
     context['user_faves'] = UserFaves.objects.filter(user = p)
     return render(request, 'users/profile.html', context)

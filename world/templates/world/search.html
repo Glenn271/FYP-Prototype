@@ -172,7 +172,6 @@
                     <p class="card-text">Posted {{ prop.date_posted|date:"F d, Y" }}</p>
                     <a href="{% url 'prop-detail' prop.id %}" class="btn btn-primary">Property Details &rarr;</a>
                     <a href="{% url 'add-fave' prop.id %}" class="btn btn-primary"> Add to Favourites &rarr;</a>
-                    {% url 'prop-detail' prop.id  %}
                       <ul class = "ul_card">
                             <li class = "rent_rec">Rent</li>
                             <style>
