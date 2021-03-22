@@ -217,6 +217,16 @@ def search(request):
 
                     total_sim = rent_weighted + house_weighted
 
+                    #check if property already in favourites
+                    u = User.objects.get(username=request.user.username)
+                    p = Profile.objects.get(user=u)
+                    h = Housing.objects.get(id=prop.id)
+
+                    if UserFaves.objects.filter(user=p, house=h).exists():
+                        in_favourites = True
+                    else:
+                        in_favourites = False
+
                     # making JSON object for property data
                     property = {
                         'id' : prop.id,
@@ -232,7 +242,8 @@ def search(request):
                         'baths': prop.baths,
                         'house': prop.propertyType,
                         'house_sim': house_sim,
-                        'total_sim' : total_sim
+                        'total_sim' : total_sim,
+                        'in_favourites': in_favourites
                     }
 
                     prop_list.append(property)
@@ -241,6 +252,7 @@ def search(request):
                     prop_list.sort(key=lambda k: k['rent_eur'], reverse=False)
                 else:
                     prop_list.sort(key=lambda k: k['total_sim'], reverse=True)
+
 
                 #context
                 context['prop_list'] = prop_list
