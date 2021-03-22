@@ -103,7 +103,7 @@ def find_latest_info(city):
                 print(propAddress)
                 print(lat + " " + lon)
 
-                bingSearch = "{} site:daft.ie".format(propAddress)
+                bingSearch = "{0} site:daft.ie".format(propAddress)
 
                 bingURL = "http://www.bing.com/images/search?q=" + bingSearch + "&FORM=HDRSC2"
 
@@ -112,14 +112,12 @@ def find_latest_info(city):
                 b_soup = BeautifulSoup(bingPage.content, 'html.parser')
 
                 try:
-                    image_result_raw = b_soup.find("a", {"class": "iusc"})
-                    m = json.loads(image_result_raw["m"])
+                    raw_image = b_soup.find("a", {"class": "iusc"})
+                    m = json.loads(raw_image["m"])
                     turl = m["turl"]  # mobile image, desktop image
                 except:
                     turl = "https://dummyimage.com/600x400/ffffff/000.png&text=Image+Coming+Soon"
                 print(prop.address, turl)
-
-
 
                 listing = Housing(address=propAddress, city = city, lat=lat,
                                        lon = lon, rent=rentPrice, beds = beds, baths = baths,

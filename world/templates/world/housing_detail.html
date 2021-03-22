@@ -40,8 +40,7 @@
             <h1>{% block title %} {{ prop.address }} {% endblock title %}</h1>
             <p class="card-text ">Posted on : {{ prop.date_posted }}</p>
             <p class="card-text ">Rent: {{ prop.rent }}</p>
-            <img src = "https://maps.googleapis.com/maps/api/streetview?location={{ prop.lat }},{{ prop.lon }}
-            &size=456x456&key=AIzaSyAAUX-ik3h6pXkgvKcT3T1r3L8uCTsD0do" alt = "None">
+            <img src="{{prop.url}}" class="img-fluid" alt="Responsive image">
             <br>
           </div>
         </div>
