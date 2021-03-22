@@ -11,6 +11,7 @@ import urllib.parse
 import re
 import overpy
 import numpy as np
+import json
 
 
 def home(request):
@@ -102,15 +103,27 @@ def find_latest_info(city):
                 print(propAddress)
                 print(lat + " " + lon)
 
-                # listing = TestProperty(address=propAddress, city = city, lat=lat,
-                #                        lon = lon, rent=rentPrice, beds = beds, baths = baths,
-                #                        propertyType = daftHouse)
+                bingSearch = "{} site:daft.ie".format(propAddress)
+
+                bingURL = "http://www.bing.com/images/search?q=" + bingSearch + "&FORM=HDRSC2"
+
+                bingPage = requests.get(bingURL)
+
+                b_soup = BeautifulSoup(bingPage.content, 'html.parser')
+
+                try:
+                    image_result_raw = b_soup.find("a", {"class": "iusc"})
+                    m = json.loads(image_result_raw["m"])
+                    turl = m["turl"]  # mobile image, desktop image
+                except:
+                    turl = "https://dummyimage.com/600x400/ffffff/000.png&text=Image+Coming+Soon"
+                print(prop.address, turl)
+
+
 
                 listing = Housing(address=propAddress, city = city, lat=lat,
                                        lon = lon, rent=rentPrice, beds = beds, baths = baths,
-                                       propertyType = daftHouse)
-
-
+                                       propertyType = daftHouse, url=turl)
 
                 listing.save()
                 search_props.append(listing)
@@ -158,12 +171,12 @@ def search(request):
             rent_weight = balanced[0]
             house_weight = balanced[1]
 
-            # search_props = TestProperty.objects.filter(city=city)
+
             search_props = Housing.objects.filter(city=city)
 
             if not search_props:
                 search_props = find_latest_info(city)
-                print(search_props)
+                # print(search_props)
 
             # else:
             #     last_updated = datetime.strftime(search_props[0].date_posted, '%d-%m-%Y')
@@ -243,7 +256,8 @@ def search(request):
                         'house': prop.propertyType,
                         'house_sim': house_sim,
                         'total_sim' : total_sim,
-                        'in_favourites': in_favourites
+                        'in_favourites': in_favourites,
+                        'url': prop.url
                     }
 
                     prop_list.append(property)

@@ -3,9 +3,8 @@
 {% block content %}
     <h1>Your Profile</h1>
     <br>
-    <h4>Username: {{ user.username }}</h4>
+    <h4> Username: {{ user.username }}</h4>
     <h4> Email: {{ user.email }}</h4>
-
 
     <h4>Your Favourites</h4>
     {% if user_faves %}
@@ -26,9 +25,10 @@
                 <p class="card-text">Posted {{ fave.house.date_posted|date:"F d, Y" }}</p>
                 <a href="{% url 'prop-detail' fave.house.id %}" class="btn btn-primary">Property Details &rarr;</a>
                 <a href="{% url 'remove-fave' fave.house.id %}" class="btn btn-primary"> Remove from Favourites &rarr;</a>
-                  <li> Beds: {{ fave.house.beds }}</li>
-                  <li> Baths: {{ fave.house.baths }}</li>
-                  <li> Property Type: {{ fave.house.propertyType }}</li>
+                  <ul class = "ul_card">
+                      <li> Beds: {{ fave.house.beds }}</li>
+                      <li> Baths: {{ fave.house.baths }}</li>
+                      <li> Property Type: {{ fave.house.propertyType }}</li>
                   </ul>
               </div>
             </div>

@@ -156,6 +156,8 @@
                      house_sim = "{{ prop.house_sim }}"
                      date_posted = "{{ prop.date_posted }}">
 
+                <img class="card-img-top" src="{{ prop.url }}" alt="Image Coming Soon!">
+
                   <div class="card-body">
                     {% if prop == prop_list.0 %}
                         <i class="fas fa-star" style = "color:darkgoldenrod;"></i>
@@ -171,6 +173,8 @@
                     <p class="card-text">{{ prop.rent }}</p>
                     <p class="card-text">Posted {{ prop.date_posted|date:"F d, Y" }}</p>
                     <a href="{% url 'prop-detail' prop.id %}" class="btn btn-primary">Property Details &rarr;</a>
+
+                  <!-- Favourites only show if logged in, and will show if already in favourites-->
                       {% if user.is_authenticated %}
                           {% if prop.in_favourites %}
                             <a href="{% url 'remove-fave' prop.id %}" class="btn btn-primary"> Remove From Favourites &rarr;</a>
@@ -178,6 +182,7 @@
                             <a href="{% url 'add-fave' prop.id %}" class="btn btn-primary"> Add to Favourites &rarr;</a>
                           {% endif %}
                       {% endif %}
+
                       <ul class = "ul_card">
                             <li class = "rent_rec">Rent</li>
                             <style>

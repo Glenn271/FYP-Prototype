@@ -59,6 +59,7 @@ class Housing(models.Model):
     beds = models.CharField(max_length=100, null=True)  # type of house (apartment, bungalow etc)
     baths = models.CharField(max_length=100, null=True)  # type of house (apartment, bungalow etc)
     propertyType = models.CharField(max_length=100) #type of house (apartment, bungalow etc)
+    url = models.CharField(max_length=300, null=True)
 
     def __str__(self):
         return self.address
