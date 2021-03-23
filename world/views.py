@@ -134,8 +134,7 @@ def find_latest_info(city):
 def search(request):
     context = {}
     prop_list = []
-    houseTypes = ['Apartment', 'Terraced House', 'Semi-Detached',
-                  'Detached', 'Bungalow', 'Country House', 'Studio']
+    houseTypes = ['Apartment', 'House', 'Studio']
 
     if request.method == 'POST':
         form = PropertySearchForm(request.POST)
@@ -207,16 +206,21 @@ def search(request):
                     house_sim = 0
 
                     if actual_rent != 0:
-                        diff = actual_rent - ideal_rent
+                        # score based on proportion of ideal to actual rent
+                        # this takes every property price into account, as opposed to manual classing
+                        diff = float(ideal_rent/actual_rent)
+                        rent_sim = diff
 
-                        if (diff <= 0):
-                            rent_sim = 1
-                        elif (diff > 0 and diff <= (ideal_rent * 0.33)):
-                            rent_sim = 0.8
-                        elif(diff > (ideal_rent * 0.33) and diff <= (ideal_rent * 0.67)):
-                            rent_sim = 0.5
-                        else:
-                            rent_sim = 0
+                        # diff = actual_rent - ideal_rent
+                        #
+                        # if (diff <= 0):
+                        #     rent_sim = 1 *
+                        # elif (diff > 0 and diff <= (ideal_rent * 0.33)):
+                        #     rent_sim = 0.8
+                        # elif(diff > (ideal_rent * 0.33) and diff <= (ideal_rent * 0.67)):
+                        #     rent_sim = 0.5
+                        # else:
+                        #     rent_sim = 0
 
                     # ideal vs actual house type
                     for house in houseType:

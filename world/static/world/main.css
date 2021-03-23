@@ -146,6 +146,37 @@ padding-right: .6em;
   cursor: pointer;
 }
 
+.sidebar {
+  margix:20px
+}
+
+.profile-username {
+  text-align:center;
+  font-size:24px;
+}
+
+.profile-email {
+  text-align:center;
+  text-transform: uppercase;
+  color:deepskyblue;
+  font-size:24px;
+}
+
+.prop-button {
+  margin: 5px;
+}
+
+.priority-card label{
+  font-size: 24px;
+}
+
+.priceLabel {
+  font-size: 24px;
+}
+
+
+
+
 
 
 

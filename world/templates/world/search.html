@@ -65,7 +65,11 @@
                 <br>
                 <input class = "slider" id= "rent" name="rent" type="range" min="200" max="10000"
                        value = "5000" step="50"/>
-                <label id="rentPrice"></label>
+                <div class = "card">
+                    <div class = "card-body col text-center">
+                            <label id="rentPrice" class = "priceLabel"></label>
+                    </div>
+                </div>
                 <br>
 
                 <br>
@@ -82,51 +86,65 @@
                 </div>
                 <br>
 
-                <br>
-                {#  rent priority slider  #}
-                <label>Rent Cost Priority</label>
-                <i class="fas fa-question-circle" data-toggle="collapse"
-                href="#rentCollapse"></i>
-                <div class = "collapse" id = "rentCollapse">
-                    <div class = "card card-body">
-                        This slider will allow you to prioritise the rental price of the property above or below
-                        other criteria. <br><br> Adjusting this slider towards <strong> Low </strong> will put rental cost as a lower concern in our
-                        evaluation process. <br><br> Moving towards <strong>High</strong> will enable our algorithm to mark the rental price as a
-                        primary concern while identifying your best match!
+                <div class = "range-input">
+                    <br>
+                    <!-- RENT -->
+                    <label>Rent Cost Priority</label>
+                    <i class="fas fa-question-circle" data-toggle="collapse"
+                    href="#rentCollapse"></i>
+                    <div class = "collapse" id = "rentCollapse">
+                        <div class = "card card-body">
+                            This slider will allow you to prioritise the rental price of the property above or below
+                            other criteria. <br><br> Adjusting this slider towards <strong> Low </strong> will put rental cost as a lower concern in our
+                            evaluation process. <br><br> Moving towards <strong>High</strong> will enable our algorithm to mark the rental price as a
+                            primary concern while identifying your best match!
+                        </div>
                     </div>
-                </div>
-                <br>
-                <label>Low</label>
-                <input class = "slider" id="rent_priority" name="rent_priority" type="range" class="form-range" min="0" max="1"
-                       value = "0.5" step="0.1"/>
-                <label>High</label>
-                <br>
+                    <br>
 
-                <br>
-                {#  rent priority slider  #}
-                <label>Property Type Priority</label>
-                <i class="fas fa-question-circle" data-toggle="collapse"
-                href="#houseCollapse"></i>
-                <div class = "collapse" id = "houseCollapse">
-                    <div class = "card card-body">
-                        This slider will allow you to prioritise the type of the property you are looking for above or below
-                        other criteria. <br><br> Adjusting this slider towards <b> Low </b> will put the property type as a lower concern in our
-                        evaluation process. This is a suitable option if you have high flexibility in choosing the type
-                        of property you would like.
-
-                        <br><br> Adjusting this slider towards <b>High</b> will allow our algorithm to display your search results
-                        with your desired property type(s) shown first. For example, selecting Apartment in Type of Property
-                        with this High setting will display all apartments higher in the search results
-                        before taking other search criteria into consideration.
+                    <br>
+                    <input class = "slider" id="rent_priority" name="rent_priority" type="range" class="form-range" min="0" max="1"
+                           value = "0.5" step="0.1"/>
+                    <div class = "card">
+                        <div class = "card-body priority-card col text-center">
+                            <label class = "priority_label"></label>
+                        </div>
                     </div>
+                    <br>
                 </div>
 
-                <br>
-                <label>Low</label>
-                <input class = "slider" id="house_priority" name="house_priority" type="range" min="0" max="1"
-                       value = "0.5" step="0.1"/>
-                <label>High</label>
-                <br>
+                <div class = "range-input">
+                    <!-- HOUSE TYPE -->
+                    <br>
+                    <label>Property Type Priority</label>
+                    <i class="fas fa-question-circle" data-toggle="collapse"
+                    href="#houseCollapse"></i>
+                    <div class = "collapse" id = "houseCollapse">
+                        <div class = "card card-body">
+                            This slider will allow you to prioritise the type of the property you are looking for above or below
+                            other criteria. <br><br> Adjusting this slider towards <b> Low </b> will put the property type as a lower concern in our
+                            evaluation process. This is a suitable option if you have high flexibility in choosing the type
+                            of property you would like.
+
+                            <br><br> Adjusting this slider towards <b>High</b> will allow our algorithm to display your search results
+                            with your desired property type(s) shown first. For example, selecting Apartment in Type of Property
+                            with this High setting will display all apartments higher in the search results
+                            before taking other search criteria into consideration.
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <input class = "slider" id="house_priority" name="house_priority" type="range" min="0" max="1"
+                           value = "0.5" step="0.1"/>
+                    <div class = "card">
+                        <div class = "card-body priority-card col text-center">
+                            <label class = "priority_label"></label>
+                        </div>
+                    </div>
+                    <br>
+
+                </div>
 
             </fieldset>
             <div class="form-group">
@@ -172,14 +190,14 @@
                     <h5 class="card-title">{{ prop.address }}</h5>
                     <p class="card-text">{{ prop.rent }}</p>
                     <p class="card-text">Posted {{ prop.date_posted|date:"F d, Y" }}</p>
-                    <a href="{% url 'prop-detail' prop.id %}" class="btn btn-primary">Property Details &rarr;</a>
+                    <a href="{% url 'prop-detail' prop.id %}" class="btn btn-primary prop-button">Property Details &rarr;</a>
 
                   <!-- Favourites only show if logged in, and will show if already in favourites-->
                       {% if user.is_authenticated %}
                           {% if prop.in_favourites %}
-                            <a href="{% url 'remove-fave' prop.id %}" class="btn btn-primary"> Remove From Favourites &rarr;</a>
+                            <a href="{% url 'remove-fave' prop.id %}" class="btn btn-primary prop-button"> Remove From Favourites &rarr;</a>
                           {% else %}
-                            <a href="{% url 'add-fave' prop.id %}" class="btn btn-primary"> Add to Favourites &rarr;</a>
+                            <a href="{% url 'add-fave' prop.id %}" class="btn btn-primary prop-button"> Add to Favourites &rarr;</a>
                           {% endif %}
                       {% endif %}
 
@@ -239,6 +257,34 @@
             rent_slider.onload = function(){
                 rent_label.innerHTML = euro.concat(this.value);
             }
+
+            const ranges = document.querySelectorAll(".range-input");
+            ranges.forEach(wrap => {
+                const range = wrap.querySelector(".slider");
+                const msg = wrap.querySelector(".priority_label");
+
+                range.addEventListener("input", () => {
+                    setMsg(range, msg);
+                });
+                setMsg(range, msg);
+                }
+            );
+
+            function setMsg(range, msg) {
+                const val = range.value;
+                if (val < 0.3) {
+                    msg.innerHTML = "Low";
+                }
+
+                else if (val >= 0.3 && val <= 0.7) {
+                    msg.innerHTML = "Medium";
+                }
+
+                else if (val >= 0.7) {
+                    msg.innerHTML = "High";
+                }
+            }
+
         </script>
 
         <script>
