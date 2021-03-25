@@ -233,6 +233,7 @@
         L.control.layers(amenity_markers).addTo(map);
 
         let myLatLon = L.latLng('{{source.lat}}', '{{source.lon}}');
+
         let radius = L.circle(myLatLon, {
             color : 'grey',
             fillColor : 'grey',

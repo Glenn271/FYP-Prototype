@@ -37,19 +37,8 @@
       <div class="row">
         <div class="col-md-8 card mb-4  mt-3 left  top">
           <div class="card-body">
-            <h1>{% block title %} {{ prop.address }} {% endblock title %}</h1>
-            <p class="card-text ">Posted on : {{ prop.date_posted }}</p>
-            <p class="card-text ">Rent: {{ prop.rent }}</p>
-            <img src="{{prop.url}}" class="img-fluid" alt="Responsive image">
-            <br>
-          </div>
-        </div>
-      </div>
-    <div class="row">
-        <div class="col-md-8 card mb-4  mt-3 left  top">
-          <div class="card-body">
             <h3>Nearby Amenities</h3>
-              <form action = "{% url 'overpass' %}" method = "POST">
+              <form action = "{% url 'overpass' prop.id %}" method = "POST">
                   {% csrf_token %}
                   <fieldset>
                       {% for amenity in amenity_list %}
@@ -62,6 +51,7 @@
                         </div>
                       {% endfor %}
 
+                  <!-- amenities slider setup -->
                       <input type = "text" id = "lat" name = "lat"
                              value = "{{ prop.lat }}" style= "display:none"/>
                       <input type = "text" id = "lon" name = "lon"
@@ -80,6 +70,8 @@
                       <input class = "slider" id="radius" name="radius" type="range" min="0.5" max="5"
                            value = "1" step="0.5"/>
                     <label id="radiusLabel"></label>
+
+                  <!-- Altering radius slider -->
                     <script>
                         var km = "km"
                         var radius_slider = document.getElementById("radius");
@@ -90,6 +82,7 @@
                             radius_label.innerHTML = radius_slider.value.concat(km);
                         }
                     </script>
+
                       <br>
                       <button class="btn btn-outline-info" type="submit">Amenities</button>
                   </fieldset>
@@ -97,6 +90,18 @@
           </div>
         </div>
     </div>
+      <div class="row">
+        <div class="col-md-8 card mb-4  mt-3 left  top">
+          <div class="card-body">
+            <h1>{% block title %} {{ prop.address }} {% endblock title %}</h1>
+            <p class="card-text ">Posted on : {{ prop.date_posted }}</p>
+            <p class="card-text ">Rent: {{ prop.rent }}</p>
+            <img src="{{prop.url}}" class="img-fluid" alt="Responsive image">
+            <br>
+          </div>
+        </div>
+      </div>
+
     </div>
 </body>
 
@@ -127,14 +132,6 @@
 
     function setMapToCurrentLocation(map, pos) {
         console.log("In setMapToCurrentLocation.");
-        /*
-        let myLatLon = L.latLng({{ prop.lat }}, {{ prop.lon }});
-        map.flyTo(myLatLon, 16);
-        if (locationMarker) {
-            map.removeLayer(locationMarker);
-        }
-        locationMarker = new L.Marker(myLatLon, {icon:houseIcon}).addTo(map);
-        */
 
         var bounds_markers = L.featureGroup();
         var all_markers = L.markerClusterGroup();
@@ -250,14 +247,22 @@
         L.control.layers(amenity_markers).addTo(map);
 
         let myLatLon = L.latLng('{{prop.lat}}', '{{prop.lon}}');
-        /*
-        let radius = L.circle(myLatLon, {
-            color : 'grey',
-            fillColor : 'grey',
-            fillOpacity : 0.2,
-            radius : {{ source.radius }}
-        }).addTo(map);
-        */
+
+        {% if source %}
+            var radius = L.circle(myLatLon, {
+                color : 'grey',
+                fillColor : 'grey',
+                fillOpacity : 0.2,
+                radius : {{ source.radius }}
+            }).addTo(map);
+        {% else %}
+            var radius = L.circle(myLatLon, {
+                color : 'grey',
+                fillColor : 'grey',
+                fillOpacity : 0.2,
+                radius : 1000.0
+            }).addTo(map);
+        {% endif %}
 
         L.marker(myLatLon, {
             icon:houseIcon
@@ -265,9 +270,6 @@
 
         map.fitBounds(bounds_markers.getBounds());
     }
-
-
-
 
     function getCookie(name) {
         var cookieValue = null;
@@ -287,9 +289,6 @@
 
 </script>
 
-<script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAUX-ik3h6pXkgvKcT3T1r3L8uCTsD0do&callback=initialize&libraries=&v=weekly"
-  async
-></script>
+
 
 {% endblock content %}

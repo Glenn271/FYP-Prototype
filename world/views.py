@@ -25,6 +25,7 @@ def about(request):
 class PropDetailView(DetailView):
     model = Housing
     context_object_name = 'prop'
+    template_name = 'world/housing_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -181,16 +182,6 @@ def search(request):
                 search_props = find_latest_info(city)
                 # print(search_props)
 
-            # else:
-            #     last_updated = datetime.strftime(search_props[0].date_posted, '%d-%m-%Y')
-            #     time_now = datetime.strftime(timezone.now(), '%d-%m-%Y')
-            #
-            #     print(last_updated, time_now)
-            #
-            #     if last_updated != time_now:
-            #         TestProperty.objects.filter(city=city).delete()
-            #         search_props = find_latest_info(city)
-
             if not search_props:
                 context['noProp'] = True
                 return render(request, 'world/search.html', context)
@@ -199,7 +190,7 @@ def search(request):
                 for prop in search_props:
                     #extract number from rent price p/m
                     try:
-                        rentNumeric = re.search('€(.+?) ',prop.rent).group(1)
+                        rentNumeric = re.search('€(.+?) ', prop.rent).group(1)
                         rentNumeric = rentNumeric.replace(',', '')
                     except AttributeError:
                         rentNumeric = 0
@@ -207,7 +198,7 @@ def search(request):
                     ideal_rent = int(maxRent)
                     actual_rent = int(rentNumeric)
 
-                    print ("Ideal vs Actual " + str(ideal_rent) + " " + str(actual_rent))
+                    print("Ideal vs Actual " + str(ideal_rent) + " " + str(actual_rent))
                     rent_sim = 0
                     house_sim = 0
 
@@ -216,17 +207,6 @@ def search(request):
                         # this takes every property price into account, as opposed to manual classing
                         diff = float(ideal_rent/actual_rent)
                         rent_sim = diff
-
-                        # diff = actual_rent - ideal_rent
-                        #
-                        # if (diff <= 0):
-                        #     rent_sim = 1 *
-                        # elif (diff > 0 and diff <= (ideal_rent * 0.33)):
-                        #     rent_sim = 0.8
-                        # elif(diff > (ideal_rent * 0.33) and diff <= (ideal_rent * 0.67)):
-                        #     rent_sim = 0.5
-                        # else:
-                        #     rent_sim = 0
 
                     # ideal vs actual house type
                     for house in houseType:
@@ -288,7 +268,7 @@ def search(request):
     return render(request, 'world/search.html', {'form' : form})
 
 
-def overpass_test(request):
+def overpass_test(request, pk):
     context = {}
 
     radius = float(request.POST['radius'])
@@ -308,7 +288,9 @@ def overpass_test(request):
 
     context['amenity_list'] = amenity_list
     context['source'] = source
-    return render(request, 'world/amenities.html', context)
+    prop = Housing.objects.get(id=pk)
+    context['prop'] = prop
+    return render(request, 'world/housing_detail.html', context)
 
 
 def get_amenities(radius, lat, lon):
