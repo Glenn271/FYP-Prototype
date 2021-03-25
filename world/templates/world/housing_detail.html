@@ -52,6 +52,16 @@
               <form action = "{% url 'overpass' %}" method = "POST">
                   {% csrf_token %}
                   <fieldset>
+                      {% for amenity in amenity_list %}
+                        <div class="card amenity-card" style="width: 70vw; display:none;"
+                             amenity = "{{ amenity.amenity }}"
+                             amenity_display_name = "{{ amenity.amenity_display_name }}"
+                             name = "{{ amenity.name }}"
+                             lat = "{{ amenity.lat }}"
+                             lon = "{{ amenity.lon }}">
+                        </div>
+                      {% endfor %}
+
                       <input type = "text" id = "lat" name = "lat"
                              value = "{{ prop.lat }}" style= "display:none"/>
                       <input type = "text" id = "lon" name = "lon"
@@ -67,8 +77,8 @@
                             </div>
                         </div>
                       <br>
-                      <input class = "slider" id="radius" name="radius" type="range" min="0.5" max="10"
-                           value = "5" step="0.5"/>
+                      <input class = "slider" id="radius" name="radius" type="range" min="0.5" max="5"
+                           value = "1" step="0.5"/>
                     <label id="radiusLabel"></label>
                     <script>
                         var km = "km"
@@ -117,12 +127,143 @@
 
     function setMapToCurrentLocation(map, pos) {
         console.log("In setMapToCurrentLocation.");
+        /*
         let myLatLon = L.latLng({{ prop.lat }}, {{ prop.lon }});
         map.flyTo(myLatLon, 16);
         if (locationMarker) {
             map.removeLayer(locationMarker);
         }
         locationMarker = new L.Marker(myLatLon, {icon:houseIcon}).addTo(map);
+        */
+
+        var bounds_markers = L.featureGroup();
+        var all_markers = L.markerClusterGroup();
+        var dining_markers = L.markerClusterGroup();
+        var education_markers = L.markerClusterGroup();
+        var transportation_markers = L.markerClusterGroup();
+        var financial_markers = L.markerClusterGroup();
+        var healthcare_markers = L.markerClusterGroup();
+        var entertainment_markers = L.markerClusterGroup();
+        var shop_markers = L.markerClusterGroup();
+        var other_markers = L.markerClusterGroup();
+
+
+        var dining = ['bar', 'bbq', 'biergarten', 'cafe', 'drinking_water', 'fast_food',
+        'ice_cream', 'pub', 'restaurant']
+
+        var education = ['college', 'driving_school', 'kindergarten', 'language_school', 'library',
+        'toy_library', 'music_school', 'school', 'university']
+
+        var transportation = ['bicycle_parking', 'bicycle_repair_station', 'kindergarten', 'bicycle_rental', 'boat_rental',
+        'boat_sharing', 'bus_station', 'car_rental', 'car_sharing',
+        'car_wash', 'vehicle_inspection', 'charging_station', 'ferry_terminal', 'fuel',
+        'grit_bin', 'motorcycle_parking', 'parking', 'parking_entrance', 'parking_space', 'taxi']
+
+        var financial = ['atm', 'bank', 'bureau-de-change']
+
+        var healthcare = ['baby_hatch', 'clinic', 'kindergarten', 'dentist', 'doctors',
+        'hospital', 'nursing_home', 'pharmacy', 'social_facility', 'veterinary']
+
+        var entertainment = ['arts_centre', 'casino', 'cinema', 'community_centre',
+        'gambling', 'nightclub', 'planetarium', 'public_bookcase', 'social_centre',
+        'studio', 'theatre']
+
+        var shops = ['bakery', 'beverages', 'butcher', 'convenience', 'deli', 'frozen_food',
+        'department_store', 'general', 'kiosk', 'mall', 'supermarket', 'wholesale',
+        'jewelry', 'variety_store', 'chemist',
+        'cosmetics', 'medical_supply', 'optician',
+        'garden_centre' ,'garden_furniture', 'hardware'	,'houseware',
+        'computer', 'electronics', 'mobile_phone', 'bicycle','car','car_repair','car_parts','caravan','fuel',
+        'sports', 'video_games', 'books', 'gift', 'newsagent', 'dry_cleaning', 'laundry'
+	    ]
+
+        var others = ['animal_boarding', 'animal_breeding', 'animal_shelter', 'baking_oven',
+        'bench', 'childcare', 'clock', 'conference_centre', 'courthouse', 'crematorium',
+        'dive_centre', 'dog_toilet', 'embassy',
+        'fire_station', 'funeral_hall', 'give_box', 'grave_yard',
+        'internet_cafe', 'kitchen', 'lounger', 'marketplace',
+        'monastery', 'photo_booth', 'place_of_mourning', 'place_of_worship', 'police', 'post_box',
+        'gambling', 'nightclub', 'planetarium', 'public_bookcase', 'social_centre',
+        'post_depot', 'post_office', 'recycling', 'shelter', 'telephone', 'toilets', 'townhall',
+        'vending_machine', 'waste_basket', 'waste_disposal', 'water_point'
+        ]
+
+        $('.amenity-card').each(function() {
+            var amenity = $(this).attr('amenity');
+            var amenity_display_name = $(this).attr('amenity_display_name');
+            var name = $(this).attr('name');
+            var lat = $(this).attr('lat');
+            var lon = $(this).attr('lon');
+
+            let myLatLon = L.latLng(lat, lon);
+
+            if (dining.includes(amenity)){
+                dining_markers.addLayer(L.marker(myLatLon, {icon:dinIcon}).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
+            }
+
+            else if (education.includes(amenity)){
+                education_markers.addLayer(L.marker(myLatLon, {icon:edIcon}).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
+            }
+
+            else if (transportation.includes(amenity)){
+                transportation_markers.addLayer(L.marker(myLatLon, {icon:transIcon}).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
+            }
+
+            else if (financial.includes(amenity)){
+                financial_markers.addLayer(L.marker(myLatLon, {icon:finIcon}).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
+            }
+
+            else if (healthcare.includes(amenity)){
+                healthcare_markers.addLayer(L.marker(myLatLon, {icon:medIcon}).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
+            }
+
+            else if (entertainment.includes(amenity)){
+                entertainment_markers.addLayer(L.marker(myLatLon, {icon:entIcon}).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
+            }
+
+            else if (shops.includes(amenity)){
+                shop_markers.addLayer(L.marker(myLatLon, {icon:shopIcon}).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
+            }
+
+            else{
+                other_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
+            }
+
+            all_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
+            bounds_markers.addLayer(L.marker(myLatLon));
+
+        });
+        map.addLayer(all_markers);
+
+        var amenity_markers = {
+            "All" : all_markers,
+            "<i class=\"fas fa-utensils\"></i> Food and Drink" : dining_markers,
+            "<i class=\"fas fa-school\"></i> Education" : education_markers,
+            "<i class=\"fas fa-subway\"></i> Transport" : transportation_markers,
+            "<i class=\"fas fa-euro-sign\"></i> Financial Services" : financial_markers,
+            "<i class=\"fas fa-medkit\"></i> Healthcare" : healthcare_markers,
+            "<i class=\"fas fa-theater-masks\"></i> Entertainment" : entertainment_markers,
+            "<i class=\"fas fa-shopping-cart\"></i> Shops" : shop_markers,
+            "<i class=\"fas fa-map-marker-alt\"></i> Other Amenities" : other_markers
+        }
+
+        L.control.layers(amenity_markers).addTo(map);
+
+        let myLatLon = L.latLng('{{prop.lat}}', '{{prop.lon}}');
+        /*
+        let radius = L.circle(myLatLon, {
+            color : 'grey',
+            fillColor : 'grey',
+            fillOpacity : 0.2,
+            radius : {{ source.radius }}
+        }).addTo(map);
+        */
+
+        L.marker(myLatLon, {
+            icon:houseIcon
+        }).addTo(map);
+
+        map.fitBounds(bounds_markers.getBounds());
     }
 
 

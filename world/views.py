@@ -26,6 +26,12 @@ class PropDetailView(DetailView):
     model = Housing
     context_object_name = 'prop'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['amenity_list'] = get_amenities(1000.0, self.object.lat, self.object.lon)
+        print(context)
+        return context
+
 
 def addfave(request, pk):
     context = {}
@@ -103,7 +109,7 @@ def find_latest_info(city):
                 print(propAddress)
                 print(lat + " " + lon)
 
-                bingSearch = "{0} site:daft.ie".format(propAddress)
+                bingSearch = " \"{0}\" site:daft.ie".format(propAddress)
 
                 bingURL = "http://www.bing.com/images/search?q=" + bingSearch + "&FORM=HDRSC2"
 
@@ -339,7 +345,7 @@ def get_amenities(radius, lat, lon):
             amenity_display_name = amenity.replace("_", " ")
             amenity_display_name = amenity_display_name.title()
 
-        print(amenity_or_shop, name, node.lat, node.lon)
+        # print(amenity_or_shop, name, node.lat, node.lon)
 
         area_amenity = {
             'amenity' : amenity_or_shop,
@@ -368,7 +374,7 @@ def get_amenities(radius, lat, lon):
             amenity_display_name = amenity.replace("_", " ")
             amenity_display_name = amenity_display_name.title()
 
-        print(amenity_or_shop, name, node.lat, node.lon)
+        # print(amenity_or_shop, name, node.lat, node.lon)
 
         area_amenity = {
             'amenity': amenity_or_shop,
