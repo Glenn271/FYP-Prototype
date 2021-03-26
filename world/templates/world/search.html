@@ -43,9 +43,6 @@
             <h1 class = "h3 text-center">Find a Property</h1>
         </div>
 
-       </div>
-
-
     {% if prop_list %}
       <button class="btn btn-primary prop-button"
               type="button" data-toggle="collapse"
@@ -177,7 +174,9 @@
             {% if form.is_valid and not noProp %}
             <h3> Available Properties </h3>
             {% for prop in prop_list %}
-                <div class="card prop-card" style="width: 100%;"
+                <div class="card prop-card"
+                     id = "{{ prop.id }}"
+                     style="width: 100%;"
                      prop_id = "{{ prop.id }}"
                      address = "{{ prop.address }}"
                      rent = "{{ prop.rent }}"
@@ -358,14 +357,14 @@
 
                     let myLatLon = L.latLng(lat, lon);
 
-                    //Use temp pk then replace with actual prop id, allows button to appear in popup
-                    var url = "{% url 'prop-detail' 1234 %}";
-                    url = url.replace(/1234/, prop_id);
+                    {#//Use temp pk then replace with actual prop id, allows button to appear in popup#}
+                    {#var url = "{% url 'prop-detail' 1234 %}";#}
+                    {#url = url.replace(/1234/, prop_id);#}
 
                     all_markers.addLayer(L.marker(myLatLon,{icon:houseIcon}).bindPopup("<b>"+address+
                         "</b><br>"+
                         rent+ "<br>" +
-                    '<a href = "' + url + '" class="btn btn-outline-primary"> Property Details </a>'));
+                    '<a href = "#' + prop_id + '" class="btn btn-outline-primary"> Property Details </a>'));
 
                     bounds_markers.addLayer(L.marker(myLatLon));
 
