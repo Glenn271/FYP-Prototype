@@ -75,20 +75,39 @@ def find_latest_info(city):
 
     #if properties are found
     else:
-        propertyCard = soup.find_all(class_="SearchPage__Result-gg133s-2 itNYNv")
+        propertyCard = soup.find("ul", {"data-testid": "results"})
+        props = propertyCard.find_all(class_="SearchPage__Result-gg133s-2 itNYNv")
 
-        for prop in propertyCard:
+        for prop in props:
             try:
-                propList = prop
-                propAddress = propList.find(class_="TitleBlock__Address-sc-1avkvav-7 knPImU").get_text()
-                rentPrice = propList.find(class_="TitleBlock__Price-sc-1avkvav-3 pJtsY").p.text
+                page = prop.find("a", href=True)
+                prop_link = page['href']
+                print(prop_link)
 
-                # property info
-                beds = propList.find("p", {"data-testid": "beds"}).get_text()
-                baths = propList.find("p", {"data-testid": "baths"}).get_text()
-                daftHouse = propList.find("p", {"data-testid": "property-type"}).get_text()
+                page2 = requests.get(
+                    "https://www.daft.ie{}".format(prop_link))
+                soup2 = BeautifulSoup(page2.content, 'html.parser')
 
-                osm_address = propAddress + " Ireland"
+                img = soup2.find("img", {"data-testid": "main-header-image"})
+                img_src = img['src']
+                print(img_src)
+
+                description = soup2.find("div", {"data-testid": "description"}).get_text()
+                print(description)
+
+                rent = soup2.find("div", {"data-testid": "price"}).get_text()
+                print(rent)
+
+                address = soup2.find("h1", {"data-testid": "address"}).get_text()
+                print(address)
+
+                beds = soup2.find("p", {"data-testid": "beds"}).get_text()
+                baths = soup2.find("p", {"data-testid": "baths"}).get_text()
+                daftHouse = soup2.find("p", {"data-testid": "property-type"}).get_text()
+
+                print(beds, baths, daftHouse)
+
+                osm_address = address + " Ireland"
                 osm_city = city + " Dublin Ireland"
 
                 #using Nominatim for lat/lon info of property
@@ -107,28 +126,12 @@ def find_latest_info(city):
                     lat = response[0]["lat"]
                     lon = response[0]["lon"]
 
-                print(propAddress)
+                print(address)
                 print(lat + " " + lon)
 
-                bingSearch = " \"{0}\" site:daft.ie".format(propAddress)
-
-                bingURL = "http://www.bing.com/images/search?q=" + bingSearch + "&FORM=HDRSC2"
-
-                bingPage = requests.get(bingURL)
-
-                b_soup = BeautifulSoup(bingPage.content, 'html.parser')
-
-                try:
-                    raw_image = b_soup.find("a", {"class": "iusc"})
-                    m = json.loads(raw_image["m"])
-                    turl = m["turl"]  # mobile image, desktop image
-                except:
-                    turl = "https://dummyimage.com/600x400/ffffff/000.png&text=Image+Coming+Soon"
-                print(prop.address, turl)
-
-                listing = Housing(address=propAddress, city = city, lat=lat,
-                                       lon = lon, rent=rentPrice, beds = beds, baths = baths,
-                                       propertyType = daftHouse, url=turl)
+                listing = Housing(address=address, city = city, lat=lat,
+                    lon = lon, rent=rent, beds = beds, baths = baths,
+                    propertyType = daftHouse, url=img_src, description=description)
 
                 listing.save()
                 search_props.append(listing)
@@ -174,7 +177,6 @@ def search(request):
 
             rent_weight = balanced[0]
             house_weight = balanced[1]
-
 
             search_props = Housing.objects.filter(city=city)
 
@@ -245,7 +247,8 @@ def search(request):
                         'house_sim': house_sim,
                         'total_sim' : total_sim,
                         'in_favourites': in_favourites,
-                        'url': prop.url
+                        'url': prop.url,
+                        'description': prop.description
                     }
 
                     prop_list.append(property)
