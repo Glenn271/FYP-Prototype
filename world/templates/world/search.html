@@ -165,6 +165,7 @@
             <h3> Available Properties </h3>
             {% for prop in prop_list %}
                 <div class="card prop-card" style="width: 70vw;"
+                     prop_id = "{{ prop.id }}"
                      address = "{{ prop.address }}"
                      rent = "{{ prop.rent }}"
                      lat = "{{ prop.lat }}"
@@ -337,13 +338,23 @@
 
             {% if form.is_valid and not noProp %}
                 $('.prop-card').each(function() {
+                    var prop_id = $(this).attr('prop_id');
                     var address = $(this).attr('address');
                     var rent = $(this).attr('rent');
                     var lat = $(this).attr('lat');
                     var lon = $(this).attr('lon');
 
                     let myLatLon = L.latLng(lat, lon);
-                    all_markers.addLayer(L.marker(myLatLon,{icon:houseIcon}).bindPopup("<b>"+address+"</b><br>"+rent));
+
+                    //Use temp pk then replace with actual prop id, allows button to appear in popup
+                    var url = "{% url 'prop-detail' 1234 %}";
+                    url = url.replace(/1234/, prop_id);
+
+                    all_markers.addLayer(L.marker(myLatLon,{icon:houseIcon}).bindPopup("<b>"+address+
+                        "</b><br>"+
+                        rent+ "<br>" +
+                    '<a href = "' + url + '" class="btn btn-outline-primary"> Property Details </a>'));
+
                     bounds_markers.addLayer(L.marker(myLatLon));
 
                 });
