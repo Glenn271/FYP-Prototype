@@ -29,6 +29,12 @@
 </head>
 
 <body>
+    {% if not amenity_list %}
+        <div class="alert alert-danger" role="alert">
+            Looks like there's no amenities in this given radius! Please try again.
+        </div>
+    {% endif %}
+
     {% block body_content %}
         {% leaflet_map "map" callback="window.map_init_basic" %}
     {% endblock %}
@@ -41,6 +47,7 @@
               <form action = "{% url 'overpass' prop.id %}" method = "POST">
                   {% csrf_token %}
                   <fieldset>
+                  {% if amenity_list %}
                       {% for amenity in amenity_list %}
                         <div class="card amenity-card" style="width: 70vw; display:none;"
                              amenity = "{{ amenity.amenity }}"
@@ -50,6 +57,7 @@
                              lon = "{{ amenity.lon }}">
                         </div>
                       {% endfor %}
+                  {% endif %}
 
                   <!-- amenities slider setup -->
                       <input type = "text" id = "lat" name = "lat"
@@ -97,6 +105,7 @@
             <p class="card-text ">Posted on : {{ prop.date_posted }}</p>
             <p class="card-text ">Rent: {{ prop.rent }}</p>
             <img src="{{prop.url}}" class="img-fluid" alt="Responsive image">
+            <br>
             <h3 class = "card-title"> Description </h3>
             <p class = "card-text">{{ prop.description }}</p>
             <br>
@@ -134,6 +143,8 @@
 
     function setMapToCurrentLocation(map, pos) {
         console.log("In setMapToCurrentLocation.");
+
+        {% if amenity_list %}
 
         var bounds_markers = L.featureGroup();
         var all_markers = L.markerClusterGroup();
@@ -248,6 +259,8 @@
 
         L.control.layers(amenity_markers).addTo(map);
 
+        {% endif %}
+
         let myLatLon = L.latLng('{{prop.lat}}', '{{prop.lon}}');
 
         {% if source %}
@@ -270,7 +283,12 @@
             icon:houseIcon
         }).addTo(map);
 
-        map.fitBounds(bounds_markers.getBounds());
+        {% if amenity_list %}
+            map.fitBounds(bounds_markers.getBounds());
+        {% else %}
+            var bounds = L.latLngBounds(myLatLon);
+            map.fitBounds(bounds.getBounds());
+        {% endif %}
     }
 
     function getCookie(name) {

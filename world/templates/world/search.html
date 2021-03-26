@@ -44,6 +44,16 @@
         </div>
 
        </div>
+
+
+    {% if prop_list %}
+      <button class="btn btn-primary prop-button"
+              type="button" data-toggle="collapse"
+              data-target="#formCollapse" aria-expanded="false" aria-controls="formCollapse">
+              Refine Your Search
+      </button>
+      <div class = "collapse" id = "formCollapse">
+    {% endif %}
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
@@ -153,6 +163,9 @@
                 <button class="btn btn-outline-info" type="submit">Search</button>
             </div>
         </form>
+        {% if prop_list %}
+        </div>
+        {% endif %}
 
         {% if form.is_valid and not noProp %}
             {% leaflet_map "map" callback="window.map_init_basic" %}
@@ -164,7 +177,7 @@
             {% if form.is_valid and not noProp %}
             <h3> Available Properties </h3>
             {% for prop in prop_list %}
-                <div class="card prop-card" style="width: 70vw;"
+                <div class="card prop-card" style="width: 100%;"
                      prop_id = "{{ prop.id }}"
                      address = "{{ prop.address }}"
                      rent = "{{ prop.rent }}"
@@ -246,7 +259,6 @@
     </body>
 
     {% block extra_footer %}
-
         <script>
             var euro = "€";
             var rent_slider = document.getElementById("rent");

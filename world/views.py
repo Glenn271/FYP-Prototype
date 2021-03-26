@@ -93,7 +93,8 @@ def find_latest_info(city):
                 print(img_src)
 
                 description = soup2.find("div", {"data-testid": "description"}).get_text()
-                print(description)
+                clean_description = description.replace("DescriptionAdvertisement", '')
+                print(clean_description)
 
                 rent = soup2.find("div", {"data-testid": "price"}).get_text()
                 print(rent)
@@ -131,7 +132,7 @@ def find_latest_info(city):
 
                 listing = Housing(address=address, city = city, lat=lat,
                     lon = lon, rent=rent, beds = beds, baths = baths,
-                    propertyType = daftHouse, url=img_src, description=description)
+                    propertyType = daftHouse, url=img_src, description=clean_description)
 
                 listing.save()
                 search_props.append(listing)
@@ -182,7 +183,7 @@ def search(request):
 
             if not search_props:
                 search_props = find_latest_info(city)
-                # print(search_props)
+
 
             if not search_props:
                 context['noProp'] = True
@@ -258,8 +259,7 @@ def search(request):
                 else:
                     prop_list.sort(key=lambda k: k['total_sim'], reverse=True)
 
-
-                #context
+                # context
                 context['prop_list'] = prop_list
                 context['form'] = form
 
@@ -313,62 +313,68 @@ def get_amenities(radius, lat, lon):
             """).format(radius, lat, lon)
     result = api.query(query)
 
-    for node in result.nodes:
-        amenity = node.tags.get("amenity", "n/a")
-        shop = node.tags.get("shop", "n/a")
-        name = node.tags.get("name", "n/a")
+    try:
+        for node in result.nodes:
+            amenity = node.tags.get("amenity", "n/a")
+            shop = node.tags.get("shop", "n/a")
+            name = node.tags.get("name", "n/a")
 
-        amenity_or_shop = " "
+            amenity_or_shop = " "
 
-        if amenity == "n/a" and shop != "n/a":
-            amenity_or_shop = shop
-            amenity_display_name = shop.replace("_", " ")
-            amenity_display_name = amenity_display_name.title()
+            if amenity == "n/a" and shop != "n/a":
+                amenity_or_shop = shop
+                amenity_display_name = shop.replace("_", " ")
+                amenity_display_name = amenity_display_name.title()
 
-        else:
-            amenity_or_shop = amenity
-            amenity_display_name = amenity.replace("_", " ")
-            amenity_display_name = amenity_display_name.title()
+            else:
+                amenity_or_shop = amenity
+                amenity_display_name = amenity.replace("_", " ")
+                amenity_display_name = amenity_display_name.title()
 
-        # print(amenity_or_shop, name, node.lat, node.lon)
+            # print(amenity_or_shop, name, node.lat, node.lon)
 
-        area_amenity = {
-            'amenity' : amenity_or_shop,
-            'amenity_display_name' : amenity_display_name,
-            'name' : name,
-            'lat' : node.lat,
-            'lon' : node.lon
-        }
+            area_amenity = {
+                'amenity' : amenity_or_shop,
+                'amenity_display_name' : amenity_display_name,
+                'name' : name,
+                'lat' : node.lat,
+                'lon' : node.lon
+            }
 
-        amenity_list.append(area_amenity)
+            amenity_list.append(area_amenity)
+    except:
+        print("incompatible")
 
-    for way in result.ways:
-        amenity = way.tags.get("amenity", "n/a")
-        shop = way.tags.get("shop", "n/a")
-        name = way.tags.get("name", "n/a")
+    try:
+        for way in result.ways:
+            amenity = way.tags.get("amenity", "n/a")
+            shop = way.tags.get("shop", "n/a")
+            name = way.tags.get("name", "n/a")
 
-        amenity_or_shop = " "
+            amenity_or_shop = " "
 
-        if amenity == "n/a" and shop != "n/a":
-            amenity_or_shop = shop
-            amenity_display_name = shop.replace("_", " ")
-            amenity_display_name = amenity_display_name.title()
+            if amenity == "n/a" and shop != "n/a":
+                amenity_or_shop = shop
+                amenity_display_name = shop.replace("_", " ")
+                amenity_display_name = amenity_display_name.title()
 
-        else:
-            amenity_or_shop = amenity
-            amenity_display_name = amenity.replace("_", " ")
-            amenity_display_name = amenity_display_name.title()
+            else:
+                amenity_or_shop = amenity
+                amenity_display_name = amenity.replace("_", " ")
+                amenity_display_name = amenity_display_name.title()
 
-        # print(amenity_or_shop, name, node.lat, node.lon)
+            # print(amenity_or_shop, name, node.lat, node.lon)
 
-        area_amenity = {
-            'amenity': amenity_or_shop,
-            'amenity_display_name': amenity_display_name,
-            'name': name,
-            'lat': node.lat,
-            'lon': node.lon
-        }
+            area_amenity = {
+                'amenity': amenity_or_shop,
+                'amenity_display_name': amenity_display_name,
+                'name': name,
+                'lat': node.lat,
+                'lon': node.lon
+            }
 
-        amenity_list.append(area_amenity)
+            amenity_list.append(area_amenity)
+    except:
+        print("incompatible amenity")
 
     return amenity_list
