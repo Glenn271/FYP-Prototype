@@ -158,14 +158,19 @@ def search(request):
             rentPriority = request.POST['rent_priority']
             housePriority = request.POST['house_priority']
             houseType = form.cleaned_data['house_type']
+            bedrooms = int(request.POST['bedrooms'])
+            bedPriority = request.POST['bed_priority']
+            bathrooms = int(request.POST['bathrooms'])
+            bathPriority = request.POST['bath_priority']
 
             if not houseType or 'Any' in houseType:
                 housePriority = 0
 
             print(city)
-            print(rentPriority, housePriority, houseType)
+            print(rentPriority, housePriority, bedPriority, bathPriority)
+            print(maxRent, houseType, bedrooms, bathrooms)
 
-            weights = np.array([rentPriority, housePriority]).astype(np.float)
+            weights = np.array([rentPriority, housePriority, bedPriority, bathPriority]).astype(np.float)
             weight_sum = np.sum(weights)
             print(weights, weight_sum)
 
@@ -178,6 +183,8 @@ def search(request):
 
             rent_weight = balanced[0]
             house_weight = balanced[1]
+            bed_weight = balanced[2]
+            bath_weight = balanced[3]
 
             search_props = Housing.objects.filter(city=city)
 
@@ -216,10 +223,21 @@ def search(request):
                         if house in houseTypes or house == "Any":
                             house_sim = 1
 
+                    split_beds = prop.beds.split()
+                    actual_beds = int(split_beds[0])
+
+                    split_baths = prop.baths.split()
+                    actual_baths = int(split_baths[0])
+
+                    bed_sim = float(actual_beds/bedrooms)
+                    bath_sim = float(actual_baths/bathrooms)
+
                     rent_weighted = float(rent_sim * float(rent_weight))
                     house_weighted = float(house_sim * float(house_weight))
+                    bed_weighted = float(bed_sim * float(bed_weight))
+                    bath_weighted = float(bath_sim * float(bath_weight))
 
-                    total_sim = rent_weighted + house_weighted
+                    total_sim = rent_weighted + house_weighted + bed_weighted + bath_weighted
 
                     #check if property already in favourites
                     u = User.objects.get(username=request.user.username)
@@ -243,7 +261,9 @@ def search(request):
                         'rent_sim' : rent_sim,
                         'rent_eur' : actual_rent,
                         'beds': prop.beds,
+                        'bed_sim' : bed_sim,
                         'baths': prop.baths,
+                        'bath_sim' : bath_sim,
                         'house': prop.propertyType,
                         'house_sim': house_sim,
                         'total_sim' : total_sim,

@@ -79,6 +79,32 @@
                 <br>
 
                 <br>
+                {#  Num Bedrooms  #}
+                <label>Ideal Number of Bedrooms</label>
+                <br>
+                <input class = "slider" id= "bedrooms" name="bedrooms" type="range" min="1" max="5"
+                       value = "1" step="1"/>
+                <div class = "card">
+                    <div class = "card-body col text-center">
+                            <label id="bedLabel" class = "bbLabel"></label>
+                    </div>
+                </div>
+                <br>
+
+                <br>
+                {#  Num Bedrooms  #}
+                <label>Ideal Number of Bathrooms</label>
+                <br>
+                <input class = "slider" id= "bathrooms" name="bathrooms" type="range" min="1" max="5"
+                       value = "1" step="1"/>
+                <div class = "card">
+                    <div class = "card-body col text-center">
+                            <label id="bathLabel" class = "bbLabel"></label>
+                    </div>
+                </div>
+                <br>
+
+                <br>
                 {#  priority sliders  #}
                 <label class = "font-weight-bold">Criteria Priorities</label>
                 <i class="fas fa-question-circle" data-toggle="collapse"
@@ -92,6 +118,7 @@
                 </div>
                 <br>
 
+                <!-- Rent Cost Priority -->
                 <div class = "range-input">
                     <br>
                     <!-- RENT -->
@@ -121,6 +148,7 @@
                     <br>
                 </div>
 
+                <!-- House Type Priority -->
                 <div class = "range-input">
                     <!-- HOUSE TYPE -->
                     <br>
@@ -154,6 +182,72 @@
                     <br>
 
                 </div>
+
+                <!-- Bedroom Priority -->
+                <div class = "range-input">
+                    <!-- HOUSE TYPE -->
+                    <br>
+                    <label>Number of Bedrooms Priority</label>
+                    <i class="fas fa-question-circle" data-toggle="collapse"
+                    href="#bedCollapse"></i>
+                    <div class = "collapse" id = "bedCollapse">
+                        <div class = "card card-body">
+                            This slider will allow you to prioritise the ideal number of bedrooms you are looking for above or below
+                            other criteria. <br><br> Adjusting this slider to the left will make the priority <b> Low </b>
+                            which will put the number of bedrooms as a lower concern in our
+                            evaluation process.
+
+                            <br><br> Moving the slider to the right will make the priority <b>High</b> which will allow our algorithm to display your search results
+                            with your ideal number of bedrooms prioritised.
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <input class = "slider" id="bed_priority" name="bed_priority" type="range" min="0" max="1"
+                           value = "0.5" step="0.1"/>
+                    <div class = "card">
+                        <div class = "card-body priority-card col text-center">
+                            <label class = "priority_label"></label>
+                        </div>
+                    </div>
+                    <br>
+
+                </div>
+
+                <!-- Bathroom Priority -->
+                <div class = "range-input">
+                    <!-- HOUSE TYPE -->
+                    <br>
+                    <label>Number of Bathrooms Priority</label>
+                    <i class="fas fa-question-circle" data-toggle="collapse"
+                    href="#bathCollapse"></i>
+                    <div class = "collapse" id = "bathCollapse">
+                        <div class = "card card-body">
+                            This slider will allow you to prioritise the ideal number of bathrooms you are looking for above or below
+                            other criteria. <br><br> Adjusting this slider to the left will make the priority <b> Low </b>
+                            which will put the number of bathrooms as a lower concern in our
+                            evaluation process.
+
+                            <br><br> Moving the slider to the right will make the priority <b>High</b>
+                            which will allow our algorithm to display your search results
+                            with your ideal number of bathrooms prioritised.
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <input class = "slider" id="bath_priority" name="bath_priority" type="range" min="0" max="1"
+                           value = "0.5" step="0.1"/>
+                    <div class = "card">
+                        <div class = "card-body priority-card col text-center">
+                            <label class = "priority_label"></label>
+                        </div>
+                    </div>
+                    <br>
+
+                </div>
+
 
             </fieldset>
             <div class="form-group">
@@ -266,6 +360,74 @@
 
             rent_slider.onload = function(){
                 rent_label.innerHTML = euro.concat(this.value);
+            }
+
+            // bedroom slider //
+            var plus = "+"
+            var bed_slider = document.getElementById("bedrooms");
+            var bed_label = document.getElementById("bedLabel");
+
+            if(bed_slider.value == 5){
+                bed_label.innerHTML = bed_slider.value.concat(plus)
+            }
+
+            else{
+                bed_label.innerHTML = bed_slider.value;
+            }
+
+
+            bed_slider.oninput = function(){
+                if(bed_slider.value == 5){
+                    bed_label.innerHTML = bed_slider.value.concat(plus)
+                }
+
+                else{
+                    bed_label.innerHTML = bed_slider.value;
+                }
+            }
+
+            bed_slider.onload = function(){
+                if(bed_slider.value == 5){
+                    bed_label.innerHTML = bed_slider.value.concat(plus)
+                }
+
+                else{
+                    bed_label.innerHTML = bed_slider.value;
+                }
+            }
+
+            // bathroom slider
+            var plus = "+"
+            var bath_slider = document.getElementById("bathrooms");
+            var bath_label = document.getElementById("bathLabel");
+
+            if(bath_slider.value == 5){
+                bath_label.innerHTML = bath_slider.value.concat(plus)
+            }
+
+            else{
+                bath_label.innerHTML = bath_slider.value;
+            }
+
+
+            bath_slider.oninput = function(){
+                if(bath_slider.value == 5){
+                    bath_label.innerHTML = bath_slider.value.concat(plus)
+                }
+
+                else{
+                    bath_label.innerHTML = bath_slider.value;
+                }
+            }
+
+            bath_slider.onload = function(){
+                if(bath_slider.value == 5){
+                    bath_label.innerHTML = bath_slider.value.concat(plus)
+                }
+
+                else{
+                    bath_label.innerHTML = bath_slider.value;
+                }
             }
 
             const ranges = document.querySelectorAll(".range-input");
