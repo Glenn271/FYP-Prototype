@@ -175,7 +175,6 @@
             <h3> Available Properties </h3>
             {% for prop in prop_list %}
                 <div class="card prop-card"
-                     id = "{{ prop.id }}"
                      style="width: 100%;"
                      prop_id = "{{ prop.id }}"
                      address = "{{ prop.address }}"
@@ -189,7 +188,8 @@
                      house_sim = "{{ prop.house_sim }}"
                      date_posted = "{{ prop.date_posted }}">
 
-                <img class="card-img-top" src="{{ prop.url }}" alt="Image Coming Soon!">
+                <img class="card-img-top" src="{{ prop.url }}"
+                     alt="Image Coming Soon!" id = "{{ prop.id }}">
 
                   <div class="card-body">
                     {% if prop == prop_list.0 %}
@@ -236,14 +236,10 @@
                       <li class = "house_rec"> Property Type: {{ prop.house }}</li>
                       <style>
                                 .house_rec{
-                                    {% if prop.house_sim == 1 %}
+                                    {% if prop.house_sim > 0.8 %}
                                         color:green;
-                                    {% elif prop.house_sim >= 0.5 and prop.house_sim < 1 %}
-                                        color:orange;
-                                    {% elif prop.house_sim <= 0.5 %}
-                                        color:red;
                                     {% else %}
-                                        color:grey;
+                                        color:orange;
                                     {% endif %}
                                 }
                       </style>
@@ -357,14 +353,10 @@
 
                     let myLatLon = L.latLng(lat, lon);
 
-                    {#//Use temp pk then replace with actual prop id, allows button to appear in popup#}
-                    {#var url = "{% url 'prop-detail' 1234 %}";#}
-                    {#url = url.replace(/1234/, prop_id);#}
-
                     all_markers.addLayer(L.marker(myLatLon,{icon:houseIcon}).bindPopup("<b>"+address+
                         "</b><br>"+
                         rent+ "<br>" +
-                    '<a href = "#' + prop_id + '" class="btn btn-outline-primary"> Property Details </a>'));
+                    '<a href = "#' + prop_id + '" class="btn btn-outline-primary"> More Information </a>'));
 
                     bounds_markers.addLayer(L.marker(myLatLon));
 

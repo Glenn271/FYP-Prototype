@@ -145,7 +145,7 @@
 
         {% if amenity_list %}
 
-        var bounds_markers = L.featureGroup();
+        {#var bounds_markers = L.featureGroup();#}
         var all_markers = L.markerClusterGroup();
         var dining_markers = L.markerClusterGroup();
         var education_markers = L.markerClusterGroup();
@@ -239,7 +239,7 @@
             }
 
             all_markers.addLayer(L.marker(myLatLon).bindPopup("<b>"+amenity_display_name+"</b><br>"+name));
-            bounds_markers.addLayer(L.marker(myLatLon));
+            {#bounds_markers.addLayer(L.marker(myLatLon));#}
 
         });
         map.addLayer(all_markers);
@@ -282,12 +282,14 @@
             icon:houseIcon
         }).addTo(map);
 
-        {% if amenity_list %}
-            map.fitBounds(bounds_markers.getBounds());
-        {% else %}
-            var bounds = L.latLngBounds(myLatLon);
-            map.fitBounds(bounds.getBounds());
-        {% endif %}
+        {##}
+        {#{% if amenity_list %}#}
+        {#    map.fitBounds(bounds_markers.getBounds());#}
+        {#{% else %}#}
+        {#    map.fitBounds(radius.getBounds());#}
+        {#{% endif %}#}
+
+        map.fitBounds(radius.getBounds());
     }
 
     function getCookie(name) {
