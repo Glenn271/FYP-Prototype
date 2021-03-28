@@ -264,6 +264,7 @@
         <br>
         <br>
 
+        <!-- Available Properties -->
         <div id = "info">
             {% if form.is_valid and not noProp %}
             <h3> Available Properties </h3>
@@ -300,13 +301,18 @@
                     <p class="card-text">{{ prop.rent }}</p>
                     <p class="card-text">Posted {{ prop.date_posted|date:"F d, Y" }}</p>
                     <a href="{% url 'prop-detail' prop.id %}" class="btn btn-primary prop-button">Property Details &rarr;</a>
+                    <br>
 
                   <!-- Favourites only show if logged in, and will show if already in favourites-->
                       {% if user.is_authenticated %}
                           {% if prop.in_favourites %}
-                            <a href="{% url 'remove-fave' prop.id %}" class="btn btn-primary prop-button"> Remove From Favourites &rarr;</a>
+{#                            <a href="{% url 'remove-fave' prop.id %}" class="btn btn-primary prop-button"> Remove From Favourites &rarr;</a>#}
+                              <a href="{% url 'remove-fave' prop.id %}" class="btn btn-outline-primary prop-button">
+                                  <i class="fas fa-heart"></i> Remove From Favourites &rarr;</a>
                           {% else %}
-                            <a href="{% url 'add-fave' prop.id %}" class="btn btn-primary prop-button"> Add to Favourites &rarr;</a>
+{#                            <a href="{% url 'add-fave' prop.id %}" class="btn btn-primary prop-button"> Add to Favourites &rarr;</a>#}
+                              <a href="{% url 'add-fave' prop.id %}" class = "btn btn-outline-primary prop-button">
+                                  <i class="far fa-heart" ></i> Add to Favourites &rarr;</a>
                           {% endif %}
                       {% endif %}
 
@@ -325,17 +331,39 @@
                                     {% endif %}
                                 }
                             </style>
-                      <li> Beds: {{ prop.beds }}</li>
-                      <li> Baths: {{ prop.baths }}</li>
+                      <li class = "bed_rec"> Beds: {{ prop.beds }}</li>
+                      <style>
+                            .bed_rec{
+                                {% if prop.bed_sim >= 0.8  %}
+                                    color:green;
+                                {% elif prop.bed_sim < 0.8 and prop.bed_sim >= 0.6 %}
+                                    color:orange;
+                                {% else %}
+                                    color:red;
+                                {% endif %}
+                            }
+                      </style>
+                      <li class = "bath_rec"> Baths: {{ prop.baths }}</li>
+                      <style>
+                            .bath_rec{
+                                {% if prop.bath_sim >= 0.8  %}
+                                    color:green;
+                                {% elif prop.bath_sim < 0.8 and prop.bath_sim >= 0.6 %}
+                                    color:orange;
+                                {% else %}
+                                    color:red;
+                                {% endif %}
+                            }
+                      </style>
                       <li class = "house_rec"> Property Type: {{ prop.house }}</li>
                       <style>
-                                .house_rec{
-                                    {% if prop.house_sim > 0.8 %}
-                                        color:green;
-                                    {% else %}
-                                        color:orange;
-                                    {% endif %}
-                                }
+                            .house_rec{
+                                {% if prop.house_sim > 0.8 %}
+                                    color:green;
+                                {% else %}
+                                    color:orange;
+                                {% endif %}
+                            }
                       </style>
                       </ul>
                   </div>

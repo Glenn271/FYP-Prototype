@@ -20,12 +20,26 @@
                 <h5 class="card-title">Find Your Ideal Property</h5>
                 <p class="card-text">Use our search engine to find the ideal property for
                 you. Enter your chosen area, the type of property/properties you would like,
-                and your maximum rent limit per month. In the Criteria Priority section, our
+                your maximum rent limit per month, and your ideal number of bedrooms and bathrooms.
+                In the Criteria Priority section, our
                 multi-criteria evaluation algorithm will filter your results based on your needs
                 and provide you with your Best Match.</p>
                 <a href="{% url 'world-search' %}" class="btn btn-primary">Find Properties</a>
               </div>
-                <img class="card-img-bottom" src="{% static 'images/Search.png' %}" alt="Card image cap">
+                <img class="card-img-bottom" id = "search" alt="Card image cap">
+
+                <style>
+                    @media only screen and (min-width: 601px) {
+                        #search{
+                            content:url("{% static 'images/Search.png' %}");
+                        }
+                    }
+                    @media only screen and (max-width: 600px) {
+                        #search{
+                            content:url("{% static 'images/MobileSearch.png' %}");
+                        }
+                    }
+                </style>
             </div>
             <br>
 
@@ -36,9 +50,23 @@
                 <p class="card-text">Based on your input on the Find Properties page, our algorithm will
                     perform multi-criteria evaluation to analyse all properties in your chosen area. Your results will
                     be displayed in order of how closely they meet your needs, with a Best Match displayed at the top.
+                    From here, you can view more details about the property, or add/remove the property from your Favourites list
+                    on your profile page.
                 </p>
               </div>
-                <img class="card-img-bottom" src="{% static 'images/Best Match.png' %}" alt="Card image cap">
+                <img class="card-img-bottom" id = "bestmatch" alt="Card image cap">
+                <style>
+                    @media only screen and (min-width: 601px) {
+                        #bestmatch{
+                            content:url("{% static 'images/Best Match.png' %}");
+                        }
+                    }
+                    @media only screen and (max-width: 600px) {
+                        #bestmatch{
+                            content:url("{% static 'images/Mobile Best Match.png' %}");
+                        }
+                    }
+                </style>
             </div>
             <br>
 
@@ -48,10 +76,22 @@
                 <h5 class="card-title">View Property Information</h5>
                 <p class="card-text">
                     You can view information for individual properties from your results. Detailed information including
-                    location on a map, property images, and a link for finding nearby amenities can be accessed.
+                    location on a map, property images, a description of the listing, and a link for finding nearby amenities can be accessed.
                 </p>
               </div>
-                <img class="card-img-bottom" src="{% static 'images/PropertyInfo.png' %}" alt="Card image cap">
+                <img class="card-img-bottom" id = "propdetails" alt="Card image cap">
+                <style>
+                    @media only screen and (min-width: 601px) {
+                        #propdetails{
+                            content:url("{% static 'images/PropertyInfo.png' %}");
+                        }
+                    }
+                    @media only screen and (max-width: 600px) {
+                        #propdetails{
+                            content:url("{% static 'images/MobilePropertyInfo.png' %}");
+                        }
+                    }
+                </style>
             </div>
             <br>
 
@@ -61,12 +101,23 @@
                 <h5 class="card-title">Finding Amenities</h5>
                 <p class="card-text">
                     Using the Nearby Amenities section, you can view nearby amenities to a property in a given radius.
-                    From 500m to 10km, you can get an idea of locations related to entertainment, healthcare and
+                    From 500m to 5km, you can get an idea of locations related to entertainment, healthcare and
                     education near the property you may consider enquiring about.
                 </p>
               </div>
-                <img class="card-img-bottom" src="{% static 'images/Amenity Radius.png' %}" alt="Card image cap">
-                <img class="card-img-bottom" src="{% static 'images/Amenities.png' %}" alt="Card image cap">
+                <img class="card-img-bottom" id = "amenities" alt="Card image cap">
+                <style>
+                    @media only screen and (min-width: 601px) {
+                        #amenities{
+                            content:url("{% static 'images/Amenities.png' %}");
+                        }
+                    }
+                    @media only screen and (max-width: 600px) {
+                        #amenities{
+                            content:url("{% static 'images/MobileAmenities.png' %}");
+                        }
+                    }
+                </style>
             </div>
             <br>
 
