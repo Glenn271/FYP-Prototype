@@ -229,8 +229,30 @@ def search(request):
                     split_baths = prop.baths.split()
                     actual_baths = int(split_baths[0])
 
-                    bed_sim = float(actual_beds/bedrooms)
-                    bath_sim = float(actual_baths/bathrooms)
+                    print(actual_beds, actual_baths)
+
+                    bed_diff = abs(actual_beds - bedrooms)
+                    bath_diff = abs(actual_baths - bathrooms)
+
+                    print(bed_diff, bath_diff)
+
+                    if bed_diff == 0:
+                        bed_sim = 1.0
+                    elif bed_diff == 1:
+                        bed_sim = 0.8
+                    elif bed_diff == 2:
+                        bed_sim = 0.6
+                    else:
+                        bed_sim = 0.3
+
+                    if bath_diff == 0:
+                        bath_sim = 1.0
+                    elif bath_diff == 1:
+                        bath_sim = 0.8
+                    elif bath_diff == 2:
+                        bath_sim = 0.6
+                    else:
+                        bath_sim = 0.3
 
                     rent_weighted = float(rent_sim * float(rent_weight))
                     house_weighted = float(house_sim * float(house_weight))
@@ -274,10 +296,7 @@ def search(request):
 
                     prop_list.append(property)
 
-                if housePriority == 0:
-                    prop_list.sort(key=lambda k: k['rent_eur'], reverse=False)
-                else:
-                    prop_list.sort(key=lambda k: k['total_sim'], reverse=True)
+                prop_list.sort(key=lambda k: k['total_sim'], reverse=True)
 
                 # context
                 context['prop_list'] = prop_list
