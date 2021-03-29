@@ -261,14 +261,18 @@ def search(request):
 
                     total_sim = rent_weighted + house_weighted + bed_weighted + bath_weighted
 
-                    #check if property already in favourites
-                    u = User.objects.get(username=request.user.username)
-                    p = Profile.objects.get(user=u)
-                    h = Housing.objects.get(id=prop.id)
+                    # render add to favourites button if user is logged in and listing is not already there
+                    try:
+                        # check if property already in favourites
+                        u = User.objects.get(username=request.user.username)
+                        p = Profile.objects.get(user=u)
+                        h = Housing.objects.get(id=prop.id)
 
-                    if UserFaves.objects.filter(user=p, house=h).exists():
-                        in_favourites = True
-                    else:
+                        if UserFaves.objects.filter(user=p, house=h).exists():
+                            in_favourites = True
+                        else:
+                            in_favourites = False
+                    except:
                         in_favourites = False
 
                     # making JSON object for property data
