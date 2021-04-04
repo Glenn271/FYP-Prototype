@@ -26,7 +26,7 @@ CITIES = [
     ('cherry-orchard', 'Cherry Orchard'),('Cherrywood', 'Cherrywood'),
     ('Christchurch', 'Christchurch'),('Churchtown', 'Churchtown'),
     ('Citywest', 'Citywest'),('Clarehall', 'Clarehall'),
-    ('Clondalkin', 'Clondalkin'),('Clonee', 'Clonee'),
+    ('Clondalkin', 'Clondalkin'),
     ('Clongriffin', 'Clongriffin'),
     ('Clonshaugh', 'Clonshaugh'),('Clonsilla', 'Clonsilla'),
     ('Clonskeagh', 'Clonskeagh'),('Clontarf', 'Clontarf'),

@@ -45,13 +45,10 @@ class TestProperty(models.Model):
     def get_absolute_url(self):
         return reverse('prop-detail', kwargs={'pk':self.pk})
 
-
 #storing property information
 class Housing(models.Model):
     address = models.CharField(max_length=100) #address of property
     city = models.CharField(max_length=100) #city
-
-    #change these to pointfield
     lon = models.FloatField()
     lat = models.FloatField()
     date_posted = models.DateTimeField(default=timezone.now) #date the listing was added to db

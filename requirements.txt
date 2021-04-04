@@ -9,3 +9,8 @@ pytz==2020.1
 sqlparse==0.4.0
 whitenoise==5.2.0
 uWSGI==2.0.19.1
+requests~=2.25.0
+bs4~=0.0.1
+beautifulsoup4~=4.9.3
+overpy~=0.4
+numpy~=1.19.5

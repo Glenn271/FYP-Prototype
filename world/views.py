@@ -44,7 +44,7 @@ def addfave(request, pk):
         uf = UserFaves(user=p, house=h)
         uf.save()
 
-    context['user_faves'] = UserFaves.objects.filter(user = p)
+    context['user_faves'] = UserFaves.objects.filter(user=p)
     return render(request, 'users/profile.html', context)
 
 
@@ -170,6 +170,7 @@ def search(request):
             print(rentPriority, housePriority, bedPriority, bathPriority)
             print(maxRent, houseType, bedrooms, bathrooms)
 
+            # multi criteria evaluation weight balancing
             weights = np.array([rentPriority, housePriority, bedPriority, bathPriority]).astype(np.float)
             weight_sum = np.sum(weights)
             print(weights, weight_sum)
@@ -373,8 +374,6 @@ def get_amenities(radius, lat, lon):
                 amenity_or_shop = amenity
                 amenity_display_name = amenity.replace("_", " ")
                 amenity_display_name = amenity_display_name.title()
-
-            # print(amenity_or_shop, name, node.lat, node.lon)
 
             area_amenity = {
                 'amenity' : amenity_or_shop,
